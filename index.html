@@ -2695,3 +2695,27 @@ updateChatStatus();
 
 showView("home");
 
+<!-- KNOX AI Service Worker -->
+    <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("./service-worker.js")
+          .then(() => {
+            console.log("KNOX AI service worker registered.");
+          })
+          .catch(error => {
+            console.error(
+              "KNOX AI service worker registration failed:",
+              error
+            );
+          });
+      });
+    }
+    </script>
+
+    <!-- Main KNOX AI JavaScript -->
+    <script src="script.js"></script>
+
+</body>
+</html>
