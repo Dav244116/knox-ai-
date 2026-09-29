@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="KNOX AI — Your intelligent AI assistant."
+  >
+
+  <meta name="theme-color" content="#080808">
+
+  <title>KNOX AI</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="authScreen" class="screen">
+
+  <div class="auth-card">
+
+    <div class="brand">
+      <div class="brand-logo">K</div>
+      <div>
+        <h1>KNOX AI</h1>
+        <p>Your intelligent AI assistant</p>
+      </div>
+    </div>
+
+    <div class="auth-tabs">
+      <button id="loginTab" class="active">
+        Login
+      </button>
+
+      <button id="registerTab">
+        Register
+      </button>
+    </div>
+
+    <form id="authForm">
+
+      <div id="nameField" class="field hidden">
+        <label>Name</label>
+        <input
+          id="nameInput"
+          type="text"
+          placeholder="Your name"
+        >
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <input
+          id="emailInput"
+          type="email"
+          placeholder="you@example.com"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input
+          id="passwordInput"
+          type="password"
+          placeholder="Minimum 6 characters"
+          required
+        >
+      </div>
+
+      <button class="primary-btn" type="submit">
+        <span id="authButtonText">Login</span>
+      </button>
+
+      <p id="authMessage" class="message"></p>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<div id="appScreen" class="app hidden">
+
+  <aside id="sidebar">
+
+    <div class="side-header">
+
+      <div class="brand small">
+        <div class="brand-logo">K</div>
+
+        <div>
+          <strong>KNOX AI</strong>
+          <small>AI Assistant</small>
+        </div>
+      </div>
+
+      <button id="closeSidebar" class="icon-btn">
+        ×
+      </button>
+
+    </div>
+
+    <button id="newChatBtn" class="new-chat">
+      <span>＋</span>
+      New Chat
+    </button>
+
+    <div class="history-title">
+      Recent conversations
+    </div>
+
+    <div id="conversationList" class="conversation-list">
+    </div>
+
+    <div class="side-bottom">
+
+      <button id="profileBtn" class="profile">
+        <div id="avatar" class="avatar">K</div>
+
+        <div>
+          <strong id="profileName">User</strong>
+          <small id="profileEmail">email</small>
+        </div>
+      </button>
+
+      <button id="logoutBtn" class="logout">
+        Log out
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <main class="chat-area">
+
+    <header class="topbar">
+
+      <button id="openSidebar" class="icon-btn">
+        ☰
+      </button>
+
+      <div>
+        <strong>KNOX AI</strong>
+        <span class="online-dot"></span>
+      </div>
+
+      <button id="themeBtn" class="icon-btn">
+        ◐
+      </button>
+
+    </header>
+
+
+    <section id="chatMessages" class="chat-messages">
+
+      <div id="welcome" class="welcome">
+
+        <div class="welcome-logo">
+          K
+        </div>
+
+        <h2>Welcome to KNOX AI</h2>
+
+        <p>
+          Ask me anything. Let's build something great.
+        </p>
+
+        <div class="suggestions">
+
+          <button data-prompt="Explain artificial intelligence simply">
+            Explain AI simply
+          </button>
+
+          <button data-prompt="Help me build a website">
+            Build a website
+          </button>
+
+          <button data-prompt="Give me some programming ideas">
+            Programming ideas
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <div class="composer-wrap">
+
+      <form id="chatForm" class="composer">
+
+        <textarea
+          id="messageInput"
+          rows="1"
+          placeholder="Message KNOX AI..."
+        ></textarea>
+
+        <button
+          id="sendButton"
+          type="submit"
+          class="send-btn"
+        >
+          ➤
+        </button>
+
+      </form>
+
+      <p class="disclaimer">
+        KNOX AI can make mistakes. Check important information.
+      </p>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
