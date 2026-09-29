@@ -6,126 +6,2692 @@
 <meta name="theme-color" content="#ff7200">
 <meta name="description" content="KNOX AI — your personal AI assistant">
 <title>KNOX AI — Knox The Great</title>
-<link rel="manifest" href="manifest.json">
+
 <style>
-:root{--o:#ff7200;--o2:#ff8a00;--bg:#fffaf3;--card:#fff;--ink:#292522;--muted:#77716c;--line:#eadfd4;--shadow:0 7px 0 rgba(42,33,25,.06),0 3px 18px rgba(42,33,25,.06)}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink)}
-body.dark{--bg:#151312;--card:#211f1d;--ink:#f8f5f1;--muted:#aaa39b;--line:#39332e;--shadow:0 7px 0 rgba(0,0,0,.18),0 3px 18px rgba(0,0,0,.2)}
-button,input,textarea{font:inherit}button{border:0;cursor:pointer;color:inherit}
-.top{height:76px;background:var(--o);display:flex;align-items:center;padding:0 14px;gap:10px;position:sticky;top:0;z-index:20;box-shadow:0 3px 0 rgba(0,0,0,.08)}
-.menu,.round,.profile,.usage{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.34);color:#fff}
-.menu,.round{width:44px;height:44px;border-radius:14px;font-size:20px}.brand{display:flex;align-items:center;gap:7px;background:transparent;color:#fff;font-weight:800;font-size:17px;padding:5px}.fox{font-size:28px}.actions{margin-left:auto;display:flex;gap:6px;align-items:center}.usage,.profile{height:42px;border-radius:14px;padding:0 10px;font-size:12px;font-weight:800}.profile{display:flex;align-items:center;gap:6px}.avatar{width:27px;height:27px;background:#fff;color:var(--o);border-radius:50%;display:grid;place-items:center}.profile-name{max-width:75px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-main{max-width:930px;margin:auto;padding:30px 14px 125px}.view{display:none}.view.active{display:block}.hero{text-align:center;margin:0 auto 27px;max-width:760px}.pill{display:inline-block;background:var(--card);border:2px solid #f0dcc7;border-radius:28px;padding:10px 17px;color:#d76a14;font-weight:800}.hero h1{font-size:42px;line-height:1.08;letter-spacing:-1.7px;margin:22px 0 12px}.hero h1 span{color:var(--o)}.hero p{color:var(--muted);line-height:1.55;font-size:16px;margin:0}
-.cards{display:grid;gap:13px}.card{display:grid;grid-template-columns:70px 1fr 25px;align-items:center;gap:14px;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:23px;padding:13px 17px;box-shadow:var(--shadow);transition:.16s}.card:hover,.tool:hover{transform:translateY(-2px)}.icon{width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font-size:29px;border:4px solid currentColor}.orange{color:#f57a13}.green{color:#5fc41f}.blue{color:#1aa9df}.purple{color:#b96ee5}.indigo{color:#637bf0}.gold{color:#d8a300}.card b{font-size:18px}.card small{display:block;color:var(--muted);margin-top:4px}.arrow{font-size:29px;color:#aaa;text-align:right}
-.trust{margin:16px auto;max-width:900px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;gap:10px;align-items:center}.trust small{display:block;color:var(--muted);margin-top:3px}
-.composer-wrap{position:fixed;bottom:0;left:0;right:0;z-index:30;background:color-mix(in srgb,var(--bg) 93%,transparent);backdrop-filter:blur(13px);border-top:2px solid var(--o);padding:8px max(8px,calc((100vw - 930px)/2)) 11px}.composer{display:flex;align-items:center;gap:4px;background:var(--card);border:2px solid var(--line);border-radius:21px;padding:5px;box-shadow:0 8px 25px rgba(0,0,0,.08)}textarea{flex:1;border:0;outline:0;background:transparent;color:var(--ink);resize:none;padding:13px 7px;max-height:120px}.send,.attach{width:45px;height:45px;border-radius:15px}.attach{background:transparent;color:var(--muted);font-size:22px}.send{background:var(--o);color:#fff;font-size:20px;box-shadow:0 3px 0 #c95a00}.note{text-align:center;color:var(--muted);font-size:10px;padding-top:5px}
-.drawer{position:fixed;left:0;top:0;bottom:0;width:min(330px,88vw);z-index:60;background:var(--card);border-right:1px solid var(--line);padding:18px;transform:translateX(-105%);transition:.22s;box-shadow:12px 0 40px rgba(0,0,0,.16);display:flex;flex-direction:column}.drawer.open{transform:translateX(0)}.drawer-head{display:flex;justify-content:space-between;align-items:center}.close{background:transparent;font-size:27px;color:var(--muted)}.new{background:var(--o);color:#fff;border-radius:14px;padding:13px;font-weight:800;margin:23px 0 10px}.nav,.bottom{display:grid;gap:4px}.nav button,.bottom button{background:transparent;text-align:left;padding:13px;border-radius:12px;color:var(--muted);font-weight:650}.nav button:hover,.bottom button:hover{background:var(--bg);color:var(--ink)}.bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:10px}.shade{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:55;opacity:0;pointer-events:none;transition:.2s}.shade.show{opacity:1;pointer-events:auto}
-.chathead{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding-bottom:15px}.back,.more{width:42px;height:42px;border-radius:13px;background:var(--card);border:1px solid var(--line)}.chathead div{flex:1}.chathead small{display:block;color:var(--muted);margin-top:3px}.messages{display:flex;flex-direction:column;gap:14px;padding:18px 0}.msg{display:flex;gap:9px;max-width:92%}.msg.user{margin-left:auto;flex-direction:row-reverse}.msgicon{width:34px;height:34px;flex:0 0 34px;border-radius:11px;background:var(--o);color:#fff;display:grid;place-items:center}.msg.user .msgicon{background:#3d3935}.bubble{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:11px 13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.msg.user .bubble{background:var(--o);border-color:var(--o);color:#fff}.actions{margin-top:5px}.actions button{background:transparent;color:var(--muted);font-size:12px;margin-right:8px}.typing i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted);margin:0 2px;animation:b 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}@keyframes b{50%{opacity:.2}}
-.page h2{font-size:30px;margin:0 0 6px}.page p{color:var(--muted);margin:0 0 20px}.tools{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}.tool{background:var(--card);border:2px solid var(--line);border-radius:21px;padding:20px;text-align:left;box-shadow:var(--shadow);transition:.16s}.tool span{font-size:29px;display:block;margin-bottom:7px}.tool small{display:block;color:var(--muted);margin-top:5px}
-.history{display:grid;gap:9px}.history-item{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:14px;display:flex;align-items:center;gap:10px}.history-item div{flex:1;min-width:0}.history-item b,.history-item small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.history-item small{color:var(--muted);margin-top:4px}.history-item button{background:#fff1e5;color:#cc5c0a;border-radius:10px;padding:8px 10px}
-.settings{max-width:650px;background:var(--card);border:2px solid var(--line);border-radius:21px;padding:19px;display:grid;gap:15px}.settings label{font-weight:700;display:grid;gap:7px}.settings input{padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--bg);color:var(--ink);outline:0}.settings small{color:var(--muted);line-height:1.5}.save{background:var(--o);color:#fff;border-radius:13px;padding:12px;font-weight:800}
-.modal{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.5);display:none;place-items:center;padding:18px}.modal.show{display:grid}.box{position:relative;background:var(--card);border-radius:23px;padding:24px;width:min(450px,100%);text-align:center}.box-x{position:absolute;right:12px;top:8px;background:transparent;font-size:27px;color:var(--muted)}.box img{max-width:100%;max-height:55vh;border-radius:15px;margin:12px 0}.box .save{width:100%}.toast{position:fixed;left:50%;bottom:105px;transform:translate(-50%,15px);background:#292522;color:#fff;border-radius:13px;padding:10px 14px;opacity:0;z-index:100;pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}.empty{text-align:center;color:var(--muted);padding:45px 15px;background:var(--card);border:1px dashed var(--line);border-radius:19px}
-@media(max-width:700px){.profile-name{display:none}.usage{font-size:11px}.hero h1{font-size:35px}.hero p{font-size:14px}.card{grid-template-columns:58px 1fr 20px;padding:12px}.icon{width:50px;height:50px;font-size:25px}.card b{font-size:16px}.card small{font-size:12px}.tools{grid-template-columns:1fr}main{padding-top:25px}.top{height:69px}}
+:root{
+  --o:#ff7200;
+  --o2:#ff8a00;
+  --bg:#fffaf3;
+  --card:#fff;
+  --ink:#292522;
+  --muted:#77716c;
+  --line:#eadfd4;
+  --shadow:0 7px 0 rgba(42,33,25,.06),0 3px 18px rgba(42,33,25,.06);
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  min-height:100%;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+
+body.dark{
+  --bg:#151312;
+  --card:#211f1d;
+  --ink:#f8f5f1;
+  --muted:#aaa39b;
+  --line:#39332e;
+  --shadow:0 7px 0 rgba(0,0,0,.18),0 3px 18px rgba(0,0,0,.2);
+}
+
+button,input,textarea{font:inherit}
+
+button{
+  border:0;
+  cursor:pointer;
+  color:inherit;
+}
+
+.top{
+  height:76px;
+  background:var(--o);
+  display:flex;
+  align-items:center;
+  padding:0 14px;
+  gap:10px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  box-shadow:0 3px 0 rgba(0,0,0,.08);
+}
+
+.menu,.round,.profile,.usage{
+  background:rgba(255,255,255,.16);
+  border:1px solid rgba(255,255,255,.34);
+  color:#fff;
+}
+
+.menu,.round{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  font-size:20px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  background:transparent;
+  color:#fff;
+  font-weight:800;
+  font-size:17px;
+  padding:5px;
+}
+
+.fox{font-size:28px}
+
+.actions{
+  margin-left:auto;
+  display:flex;
+  gap:6px;
+  align-items:center;
+}
+
+.usage,.profile{
+  height:42px;
+  border-radius:14px;
+  padding:0 10px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.profile{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.avatar{
+  width:27px;
+  height:27px;
+  background:#fff;
+  color:var(--o);
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+}
+
+.profile-name{
+  max-width:75px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+main{
+  max-width:930px;
+  margin:auto;
+  padding:30px 14px 125px;
+}
+
+.view{display:none}
+.view.active{display:block}
+
+.hero{
+  text-align:center;
+  margin:0 auto 27px;
+  max-width:760px;
+}
+
+.pill{
+  display:inline-block;
+  background:var(--card);
+  border:2px solid #f0dcc7;
+  border-radius:28px;
+  padding:10px 17px;
+  color:#d76a14;
+  font-weight:800;
+}
+
+.hero h1{
+  font-size:42px;
+  line-height:1.08;
+  letter-spacing:-1.7px;
+  margin:22px 0 12px;
+}
+
+.hero h1 span{color:var(--o)}
+
+.hero p{
+  color:var(--muted);
+  line-height:1.55;
+  font-size:16px;
+  margin:0;
+}
+
+.cards{
+  display:grid;
+  gap:13px;
+}
+
+.card{
+  display:grid;
+  grid-template-columns:70px 1fr 25px;
+  align-items:center;
+  gap:14px;
+  text-align:left;
+  background:var(--card);
+  border:2px solid var(--line);
+  border-radius:23px;
+  padding:13px 17px;
+  box-shadow:var(--shadow);
+  transition:.16s;
+}
+
+.card:hover,.tool:hover{
+  transform:translateY(-2px);
+}
+
+.icon{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-size:29px;
+  border:4px solid currentColor;
+}
+
+.orange{color:#f57a13}
+.green{color:#5fc41f}
+.blue{color:#1aa9df}
+.purple{color:#b96ee5}
+.indigo{color:#637bf0}
+.gold{color:#d8a300}
+
+.card b{font-size:18px}
+
+.card small{
+  display:block;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.arrow{
+  font-size:29px;
+  color:#aaa;
+  text-align:right;
+}
+
+.trust{
+  margin:16px auto;
+  max-width:900px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.trust small{
+  display:block;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.composer-wrap{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:30;
+  background:rgba(255,250,243,.94);
+  backdrop-filter:blur(13px);
+  border-top:2px solid var(--o);
+  padding:8px max(8px,calc((100vw - 930px)/2)) 11px;
+}
+
+.dark .composer-wrap{
+  background:rgba(21,19,18,.94);
+}
+
+.composer{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  background:var(--card);
+  border:2px solid var(--line);
+  border-radius:21px;
+  padding:5px;
+  box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+textarea{
+  flex:1;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--ink);
+  resize:none;
+  padding:13px 7px;
+  max-height:120px;
+}
+
+.send,.attach{
+  width:45px;
+  height:45px;
+  border-radius:15px;
+}
+
+.attach{
+  background:transparent;
+  color:var(--muted);
+  font-size:22px;
+}
+
+.send{
+  background:var(--o);
+  color:#fff;
+  font-size:20px;
+  box-shadow:0 3px 0 #c95a00;
+}
+
+.send:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.note{
+  text-align:center;
+  color:var(--muted);
+  font-size:10px;
+  padding-top:5px;
+}
+
+.drawer{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:min(330px,88vw);
+  z-index:60;
+  background:var(--card);
+  border-right:1px solid var(--line);
+  padding:18px;
+  transform:translateX(-105%);
+  transition:.22s;
+  box-shadow:12px 0 40px rgba(0,0,0,.16);
+  display:flex;
+  flex-direction:column;
+}
+
+.drawer.open{transform:translateX(0)}
+
+.drawer-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.close{
+  background:transparent;
+  font-size:27px;
+  color:var(--muted);
+}
+
+.new{
+  background:var(--o);
+  color:#fff;
+  border-radius:14px;
+  padding:13px;
+  font-weight:800;
+  margin:23px 0 10px;
+}
+
+.nav,.bottom{
+  display:grid;
+  gap:4px;
+}
+
+.nav button,.bottom button{
+  background:transparent;
+  text-align:left;
+  padding:13px;
+  border-radius:12px;
+  color:var(--muted);
+  font-weight:650;
+}
+
+.nav button:hover,.bottom button:hover{
+  background:var(--bg);
+  color:var(--ink);
+}
+
+.bottom{
+  margin-top:auto;
+  border-top:1px solid var(--line);
+  padding-top:10px;
+}
+
+.shade{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  z-index:55;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+}
+
+.shade.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.chathead{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid var(--line);
+  padding-bottom:15px;
+}
+
+.back,.more{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  background:var(--card);
+  border:1px solid var(--line);
+}
+
+.chathead div{flex:1}
+
+.chathead small{
+  display:block;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.messages{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  padding:18px 0;
+}
+
+.msg{
+  display:flex;
+  gap:9px;
+  max-width:92%;
+}
+
+.msg.user{
+  margin-left:auto;
+  flex-direction:row-reverse;
+}
+
+.msgicon{
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  border-radius:11px;
+  background:var(--o);
+  color:#fff;
+  display:grid;
+  place-items:center;
+}
+
+.msg.user .msgicon{background:#3d3935}
+
+.bubble{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:11px 13px;
+  line-height:1.55;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+
+.msg.user .bubble{
+  background:var(--o);
+  border-color:var(--o);
+  color:#fff;
+}
+
+.actions{
+  margin-top:5px;
+}
+
+.actions button{
+  background:transparent;
+  color:var(--muted);
+  font-size:12px;
+  margin-right:8px;
+}
+
+.typing i{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--muted);
+  margin:0 2px;
+  animation:b 1s infinite;
+}
+
+.typing i:nth-child(2){animation-delay:.15s}
+.typing i:nth-child(3){animation-delay:.3s}
+
+@keyframes b{
+  50%{opacity:.2}
+}
+
+.page h2{
+  font-size:30px;
+  margin:0 0 6px;
+}
+
+.page p{
+  color:var(--muted);
+  margin:0 0 20px;
+}
+
+.tools{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:13px;
+}
+
+.tool{
+  background:var(--card);
+  border:2px solid var(--line);
+  border-radius:21px;
+  padding:20px;
+  text-align:left;
+  box-shadow:var(--shadow);
+  transition:.16s;
+}
+
+.tool span{
+  font-size:29px;
+  display:block;
+  margin-bottom:7px;
+}
+
+.tool small{
+  display:block;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.history{
+  display:grid;
+  gap:9px;
+}
+
+.history-item{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.history-item div{
+  flex:1;
+  min-width:0;
+}
+
+.history-item b,
+.history-item small{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.history-item small{
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.history-item button{
+  background:#fff1e5;
+  color:#cc5c0a;
+  border-radius:10px;
+  padding:8px 10px;
+}
+
+.settings{
+  max-width:650px;
+  background:var(--card);
+  border:2px solid var(--line);
+  border-radius:21px;
+  padding:19px;
+  display:grid;
+  gap:15px;
+}
+
+.settings label{
+  font-weight:700;
+  display:grid;
+  gap:7px;
+}
+
+.settings input{
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:var(--bg);
+  color:var(--ink);
+  outline:0;
+}
+
+.settings small{
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.save{
+  background:var(--o);
+  color:#fff;
+  border-radius:13px;
+  padding:12px;
+  font-weight:800;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:90;
+  background:rgba(0,0,0,.5);
+  display:none;
+  place-items:center;
+  padding:18px;
+}
+
+.modal.show{
+  display:grid;
+}
+
+.box{
+  position:relative;
+  background:var(--card);
+  border-radius:23px;
+  padding:24px;
+  width:min(450px,100%);
+  text-align:center;
+}
+
+.box-x{
+  position:absolute;
+  right:12px;
+  top:8px;
+  background:transparent;
+  font-size:27px;
+  color:var(--muted);
+}
+
+.box img{
+  max-width:100%;
+  max-height:55vh;
+  border-radius:15px;
+  margin:12px 0;
+}
+
+.box .save{width:100%}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:105px;
+  transform:translate(-50%,15px);
+  background:#292522;
+  color:#fff;
+  border-radius:13px;
+  padding:10px 14px;
+  opacity:0;
+  z-index:100;
+  pointer-events:none;
+  transition:.2s;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+.empty{
+  text-align:center;
+  color:var(--muted);
+  padding:45px 15px;
+  background:var(--card);
+  border:1px dashed var(--line);
+  border-radius:19px;
+}
+
+.status{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.status.online{color:#38a852}
+
+@media(max-width:700px){
+  .profile-name{display:none}
+  .usage{font-size:11px}
+
+  .hero h1{font-size:35px}
+  .hero p{font-size:14px}
+
+  .card{
+    grid-template-columns:58px 1fr 20px;
+    padding:12px;
+  }
+
+  .icon{
+    width:50px;
+    height:50px;
+    font-size:25px;
+  }
+
+  .card b{font-size:16px}
+  .card small{font-size:12px}
+
+  .tools{grid-template-columns:1fr}
+
+  main{padding-top:25px}
+  .top{height:69px}
+}
 </style>
 </head>
+
 <body>
+
+<!-- SIDE MENU -->
 <aside class="drawer" id="drawer">
-  <div class="drawer-head"><b>🦊 KNOX AI</b><button class="close" id="close">×</button></div>
+
+  <div class="drawer-head">
+    <b>🦊 KNOX AI</b>
+    <button class="close" id="close">×</button>
+  </div>
+
   <button class="new" id="newChat">＋ New chat</button>
+
   <nav class="nav">
-    <button data-view="home">⌂ &nbsp;Home</button><button data-view="history">◷ &nbsp;Chat history</button>
-    <button data-view="study">▣ &nbsp;Study tools</button><button data-view="writing">✎ &nbsp;Writing</button>
+    <button data-view="home">⌂ &nbsp;Home</button>
+    <button data-view="history">◷ &nbsp;Chat history</button>
+    <button data-view="study">▣ &nbsp;Study tools</button>
+    <button data-view="writing">✎ &nbsp;Writing</button>
     <button data-view="coding">&lt;/&gt; &nbsp;Coding</button>
   </nav>
-  <div class="bottom"><button data-view="settings">⚙ &nbsp;Settings</button><button id="clear">⌫ &nbsp;Clear local data</button></div>
+
+  <div class="bottom">
+    <button data-view="settings">⚙ &nbsp;Settings</button>
+    <button id="clear">⌫ &nbsp;Clear local data</button>
+  </div>
+
 </aside>
+
 <div class="shade" id="shade"></div>
 
+<!-- TOP BAR -->
 <header class="top">
+
   <button class="menu" id="menu">☰</button>
-  <button class="brand" id="home"><span class="fox">🦊</span> KNOX <b>AI</b></button>
+
+  <button class="brand" id="home">
+    <span class="fox">🦊</span>
+    KNOX <b>AI</b>
+  </button>
+
   <div class="actions">
+
     <button class="round" id="theme">☾</button>
-    <button class="usage"><span id="left">20</span>/20</button>
-    <button class="profile" id="profile"><span class="avatar" id="avatar">K</span><span class="profile-name" id="pname">Knox</span></button>
+
+    <button class="usage">
+      <span id="left">20</span>/20
+    </button>
+
+    <button class="profile" id="profile">
+      <span class="avatar" id="avatar">K</span>
+      <span class="profile-name" id="pname">Knox</span>
+    </button>
+
   </div>
+
 </header>
 
 <main>
+
+<!-- HOME -->
 <section class="view active" id="homeView">
-  <div class="hero"><div class="pill">🦊 Hey, I'm Knox</div><h1>What are we<br><span>tackling today?</span></h1><p>Pick a topic below to get started — or type your own question in the box.</p></div>
-  <div class="cards">
-    <button class="card" data-prompt="Solve a quadratic equation step by step. Explain the method clearly."><span class="icon orange">📐</span><span><b>QUADRATIC</b><small>Step-by-step algebra</small></span><i class="arrow">›</i></button>
-    <button class="card" data-prompt="Explain photosynthesis simply, including the word equation and key stages."><span class="icon green">🌿</span><span><b>PHOTOSYNTHESIS</b><small>Biology explained</small></span><i class="arrow">›</i></button>
-    <button class="card" data-prompt="Give me a clear school-level breakdown of World War 1: causes, major events and effects."><span class="icon blue">🌍</span><span><b>WORLD WAR 1</b><small>History breakdown</small></span><i class="arrow">›</i></button>
-    <button class="card" data-prompt="Help me structure a strong school essay. Show introduction, body paragraphs and conclusion."><span class="icon purple">✍️</span><span><b>THESIS</b><small>Essay writing help</small></span><i class="arrow">›</i></button>
-    <button class="card" data-prompt="Teach me HTML, CSS and JavaScript by building a small project."><span class="icon indigo">💻</span><span><b>CODING</b><small>Build and learn</small></span><i class="arrow">›</i></button>
-    <button class="card" data-prompt="Make a short study plan for today's revision."><span class="icon gold">🎯</span><span><b>STUDY PLAN</b><small>Focus and revise</small></span><i class="arrow">›</i></button>
+
+  <div class="hero">
+
+    <div class="pill">
+      🦊 Hey, I'm Knox
+    </div>
+
+    <h1>
+      What are we<br>
+      <span>tackling today?</span>
+    </h1>
+
+    <p>
+      Pick a topic below to get started — or type your own question in the box.
+    </p>
+
   </div>
-  <div class="trust">⚡ <div><b>KNOX AI is ready</b><small>Ask questions, learn, write and build.</small></div></div>
+
+  <div class="cards">
+
+    <button class="card" data-prompt="Solve a quadratic equation step by step. Explain the method clearly.">
+      <span class="icon orange">📐</span>
+      <span>
+        <b>QUADRATIC</b>
+        <small>Step-by-step algebra</small>
+      </span>
+      <i class="arrow">›</i>
+    </button>
+
+    <button class="card" data-prompt="Explain photosynthesis simply, including the word equation and key stages.">
+      <span class="icon green">🌿</span>
+      <span>
+        <b>PHOTOSYNTHESIS</b>
+        <small>Biology explained</small>
+      </span>
+      <i class="arrow">›</i>
+    </button>
+
+    <button class="card" data-prompt="Give me a clear school-level breakdown of World War 1: causes, major events and effects.">
+      <span class="icon blue">🌍</span>
+      <span>
+        <b>WORLD WAR 1</b>
+        <small>History breakdown</small>
+      </span>
+      <i class="arrow">›</i>
+    </button>
+
+    <button class="card" data-prompt="Help me structure a strong school essay. Show introduction, body paragraphs and conclusion.">
+      <span class="icon purple">✍️</span>
+      <span>
+        <b>THESIS</b>
+        <small>Essay writing help</small>
+      </span>
+      <i class="arrow">›</i>
+    </button>
+
+    <button class="card" data-prompt="Teach me HTML, CSS and JavaScript by building a small project.">
+      <span class="icon indigo">💻</span>
+      <span>
+        <b>CODING</b>
+        <small>Build and learn</small>
+      </span>
+      <i class="arrow">›</i>
+    </button>
+
+    <button class="card" data-prompt="Make a short study plan for today's revision.">
+      <span class="icon gold">🎯</span>
+      <span>
+        <b>STUDY PLAN</b>
+        <small>Focus and revise</small>
+      </span>
+      <i class="arrow">›</i>
+    </button>
+
+  </div>
+
+  <div class="trust">
+    ⚡
+    <div>
+      <b>KNOX AI is ready</b>
+      <small>Ask questions, learn, write and build.</small>
+    </div>
+  </div>
+
 </section>
 
+<!-- CHAT -->
 <section class="view" id="chatView">
-  <div class="chathead"><button class="back" id="back">←</button><div><b>KNOX AI</b><small>Personal AI assistant</small></div><button class="more" id="more">⋯</button></div>
+
+  <div class="chathead">
+
+    <button class="back" id="back">←</button>
+
+    <div>
+      <b>KNOX AI</b>
+      <small id="chatStatus">Personal AI assistant</small>
+    </div>
+
+    <button class="more" id="more">⋯</button>
+
+  </div>
+
   <div class="messages" id="messages"></div>
+
 </section>
 
-<section class="view" id="historyView"><div class="page"><h2>Chat history</h2><p>Your conversations are stored locally on this device.</p></div><div class="history" id="history"></div></section>
+<!-- HISTORY -->
+<section class="view" id="historyView">
 
-<section class="view" id="studyView"><div class="page"><h2>Study tools</h2><p>Quick starters for learning and revision.</p></div><div class="tools">
-  <button class="tool" data-prompt="Explain a difficult topic to me like I'm learning it for the first time."><span>🧠</span><b>Explain a topic</b><small>Simple, clear teaching</small></button>
-  <button class="tool" data-prompt="Create five practice questions and put the answers after the questions."><span>📝</span><b>Practice questions</b><small>Test your knowledge</small></button>
-  <button class="tool" data-prompt="Turn this topic into short revision notes with headings and bullet points."><span>📚</span><b>Revision notes</b><small>Fast cramming format</small></button>
-  <button class="tool" data-prompt="Help me calculate this maths problem and show the working."><span>🧮</span><b>Math helper</b><small>Show the working</small></button>
-</div></section>
+  <div class="page">
+    <h2>Chat history</h2>
+    <p>Your conversations are stored locally on this device.</p>
+  </div>
 
-<section class="view" id="writingView"><div class="page"><h2>Writing studio</h2><p>Plan, rewrite and improve your writing.</p></div><div class="tools">
-  <button class="tool" data-prompt="Help me write a clear school essay on a topic I will provide."><span>✍️</span><b>Essay helper</b><small>Structure and ideas</small></button>
-  <button class="tool" data-prompt="Rewrite my text so it sounds natural, clear and confident without changing the meaning."><span>✨</span><b>Rewrite</b><small>Clearer wording</small></button>
-  <button class="tool" data-prompt="Summarize the text I provide into concise bullet points."><span>📌</span><b>Summarize</b><small>Key points only</small></button>
-  <button class="tool" data-prompt="Check my grammar and explain the important corrections."><span>🔎</span><b>Grammar check</b><small>Learn from corrections</small></button>
-</div></section>
+  <div class="history" id="history"></div>
 
-<section class="view" id="codingView"><div class="page"><h2>Coding lab</h2><p>Learn web development and debug your projects.</p></div><div class="tools">
-  <button class="tool" data-prompt="Teach me HTML, CSS and JavaScript by building a small project step by step."><span>🌐</span><b>Build a website</b><small>HTML + CSS + JS</small></button>
-  <button class="tool" data-prompt="Help me debug this code. Explain the error and give me the corrected version."><span>🐞</span><b>Debug code</b><small>Find the problem</small></button>
-  <button class="tool" data-prompt="Explain this programming concept in beginner-friendly language with an example."><span>💡</span><b>Learn coding</b><small>Concepts made simple</small></button>
-  <button class="tool" data-prompt="Give me a clean project structure for a modern web app."><span>🗂️</span><b>Project structure</b><small>Organize your files</small></button>
-</div></section>
+</section>
 
-<section class="view" id="settingsView"><div class="page"><h2>Settings</h2><p>Customize your KNOX AI experience.</p></div><div class="settings">
-  <label>Your display name<input id="name" maxlength="30" placeholder="Knox"></label>
-  <label>AI endpoint (optional)<input id="endpoint" placeholder="https://your-backend.example/api/chat"></label>
-  <small>Leave the endpoint blank for the built-in browser assistant. For a real model, connect a backend endpoint and keep the model API key on that backend — never in this page.</small>
-  <button class="save" id="save">Save settings</button>
-</div></section>
+<!-- STUDY -->
+<section class="view" id="studyView">
+
+  <div class="page">
+    <h2>Study tools</h2>
+    <p>Quick starters for learning and revision.</p>
+  </div>
+
+  <div class="tools">
+
+    <button class="tool" data-prompt="Explain a difficult topic to me like I'm learning it for the first time.">
+      <span>🧠</span>
+      <b>Explain a topic</b>
+      <small>Simple, clear teaching</small>
+    </button>
+
+    <button class="tool" data-prompt="Create five practice questions and put the answers after the questions.">
+      <span>📝</span>
+      <b>Practice questions</b>
+      <small>Test your knowledge</small>
+    </button>
+
+    <button class="tool" data-prompt="Turn this topic into short revision notes with headings and bullet points.">
+      <span>📚</span>
+      <b>Revision notes</b>
+      <small>Fast cramming format</small>
+    </button>
+
+    <button class="tool" data-prompt="Help me calculate this maths problem and show the working.">
+      <span>🧮</span>
+      <b>Math helper</b>
+      <small>Show the working</small>
+    </button>
+
+  </div>
+
+</section>
+
+<!-- WRITING -->
+<section class="view" id="writingView">
+
+  <div class="page">
+    <h2>Writing studio</h2>
+    <p>Plan, rewrite and improve your writing.</p>
+  </div>
+
+  <div class="tools">
+
+    <button class="tool" data-prompt="Help me write a clear school essay on a topic I will provide.">
+      <span>✍️</span>
+      <b>Essay helper</b>
+      <small>Structure and ideas</small>
+    </button>
+
+    <button class="tool" data-prompt="Rewrite my text so it sounds natural, clear and confident without changing the meaning.">
+      <span>✨</span>
+      <b>Rewrite</b>
+      <small>Clearer wording</small>
+    </button>
+
+    <button class="tool" data-prompt="Summarize the text I provide into concise bullet points.">
+      <span>📌</span>
+      <b>Summarize</b>
+      <small>Key points only</small>
+    </button>
+
+    <button class="tool" data-prompt="Check my grammar and explain the important corrections.">
+      <span>🔎</span>
+      <b>Grammar check</b>
+      <small>Learn from corrections</small>
+    </button>
+
+  </div>
+
+</section>
+
+<!-- CODING -->
+<section class="view" id="codingView">
+
+  <div class="page">
+    <h2>Coding lab</h2>
+    <p>Learn web development and debug your projects.</p>
+  </div>
+
+  <div class="tools">
+
+    <button class="tool" data-prompt="Teach me HTML, CSS and JavaScript by building a small project step by step.">
+      <span>🌐</span>
+      <b>Build a website</b>
+      <small>HTML + CSS + JS</small>
+    </button>
+
+    <button class="tool" data-prompt="Help me debug this code. Explain the error and give me the corrected version.">
+      <span>🐞</span>
+      <b>Debug code</b>
+      <small>Find the problem</small>
+    </button>
+
+    <button class="tool" data-prompt="Explain this programming concept in beginner-friendly language with an example.">
+      <span>💡</span>
+      <b>Learn coding</b>
+      <small>Concepts made simple</small>
+    </button>
+
+    <button class="tool" data-prompt="Give me a clean project structure for a modern web app.">
+      <span>🗂️</span>
+      <b>Project structure</b>
+      <small>Organize your files</small>
+    </button>
+
+  </div>
+
+</section>
+
+<!-- SETTINGS -->
+<section class="view" id="settingsView">
+
+  <div class="page">
+    <h2>Settings</h2>
+    <p>Customize your KNOX AI experience.</p>
+  </div>
+
+  <div class="settings">
+
+    <label>
+      Your display name
+      <input id="name" maxlength="30" placeholder="Knox">
+    </label>
+
+    <label>
+      AI endpoint
+      <input id="endpoint" placeholder="https://your-backend.example/api/chat">
+    </label>
+
+    <small>
+      The endpoint is optional. If you connect a backend, KNOX AI will send
+      messages to it for real AI responses. Never place API keys in this file.
+    </small>
+
+    <button class="save" id="save">
+      Save settings
+    </button>
+
+  </div>
+
+</section>
+
 </main>
 
-<div class="composer-wrap"><div class="composer"><button class="attach" id="attach">＋</button><input type="file" id="file" accept="image/*" hidden><textarea id="input" rows="1" placeholder="Ask Knox anything..."></textarea><button class="send" id="send">➤</button></div><div class="note">KNOX AI can make mistakes — check important answers.</div></div>
+<!-- COMPOSER -->
+<div class="composer-wrap">
+
+  <div class="composer">
+
+    <button class="attach" id="attach">＋</button>
+
+    <input
+      type="file"
+      id="file"
+      accept="image/*"
+      hidden
+    >
+
+    <textarea
+      id="input"
+      rows="1"
+      placeholder="Ask Knox anything..."
+    ></textarea>
+
+    <button class="send" id="send">➤</button>
+
+  </div>
+
+  <div class="note">
+    KNOX AI can make mistakes — check important answers.
+  </div>
+
+</div>
+
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<div class="modal" id="profileModal"><div class="box"><button class="box-x" data-close="profileModal">×</button><div style="font-size:54px">🦊</div><h3>KNOX profile</h3><p>Local profile — no account required.</p><button class="save" id="editProfile">Edit profile</button></div></div>
-<div class="modal" id="imageModal"><div class="box"><button class="box-x" data-close="imageModal">×</button><h3>Attached image</h3><img id="preview" alt="Selected image"><button class="save" id="askImage">Ask Knox about this image</button></div></div>
+<!-- PROFILE MODAL -->
+<div class="modal" id="profileModal">
+
+  <div class="box">
+
+    <button class="box-x" data-close="profileModal">×</button>
+
+    <div style="font-size:54px">🦊</div>
+
+    <h3>KNOX profile</h3>
+
+    <p>Local profile — no account required.</p>
+
+    <button class="save" id="editProfile">
+      Edit profile
+    </button>
+
+  </div>
+
+</div>
+
+<!-- IMAGE MODAL -->
+<div class="modal" id="imageModal">
+
+  <div class="box">
+
+    <button class="box-x" data-close="imageModal">×</button>
+
+    <h3>Attached image</h3>
+
+    <img id="preview" alt="Selected image">
+
+    <button class="save" id="askImage">
+      Ask Knox about this image
+    </button>
+
+  </div>
+
+</div>
 
 <script>
-const KEY="KNOX_AI_V2";
-const defaults={name:"Knox",theme:"light",usage:0,day:"",endpoint:"",chats:[],current:null};
-let s=load(), attached=false;
-const $=q=>document.querySelector(q), $$=q=>[...document.querySelectorAll(q)];
-function load(){try{return {...defaults,...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return {...defaults}}}
-function saveState(){localStorage.setItem(KEY,JSON.stringify(s))}
-function day(){return new Date().toISOString().slice(0,10)}
-if(s.day!==day()){s.day=day();s.usage=0;saveState()}
-function toast(t){let e=$("#toast");e.textContent=t;e.classList.add("show");clearTimeout(window.tt);window.tt=setTimeout(()=>e.classList.remove("show"),2200)}
-function theme(){document.body.classList.toggle("dark",s.theme==="dark");$("#theme").textContent=s.theme==="dark"?"☀":"☾"}
-function top(){let n=s.name||"Knox";$("#pname").textContent=n;$("#avatar").textContent=n[0].toUpperCase();$("#left").textContent=Math.max(0,20-s.usage);$("#name").value=n;$("#endpoint").value=s.endpoint||""}
-function view(v){$$(".view").forEach(x=>x.classList.remove("active"));$("#"+v+"View").classList.add("active");closeDrawer();if(v==="history")history();scrollTo(0,0)}
-function openDrawer(){$("#drawer").classList.add("open");$("#shade").classList.add("show")}
-function closeDrawer(){$("#drawer").classList.remove("open");$("#shade").classList.remove("show")}
-function newChat(){s.current={id:Date.now(),title:"New chat",messages:[],createdAt:Date.now()};s.chats.unshift(s.current);saveState();render();view("chat")}
-function ensure(){if(!s.current)newChat();return s.current}
-function add(role,text){let box=$("#messages"),m=document.createElement("div");m.className="msg "+role;m.innerHTML='<div class="msgicon">'+(role==="user"?"K":"🦊")+'</div><div><div class="bubble"></div>'+(role==="assistant"?'<div class="actions"><button>Copy</button><button>👍</button><button>👎</button></div>':"")+'</div>';m.querySelector(".bubble").textContent=text;if(role==="assistant"){m.querySelector(".actions button").onclick=()=>{navigator.clipboard?.writeText(text);toast("Copied")};m.querySelectorAll(".actions button")[1].onclick=()=>toast("Thanks for the feedback 👍");m.querySelectorAll(".actions button")[2].onclick=()=>toast("Thanks for the feedback")}box.append(m);box.scrollTop=box.scrollHeight}
-function render(){let b=$("#messages");b.innerHTML="";if(!s.current||!s.current.messages.length){b.innerHTML='<div class="empty">🦊<br><b>Ready when you are.</b><br>Ask KNOX AI a question.</div>';return}s.current.messages.forEach(x=>add(x.role,x.text))}
-function history(){let b=$("#history");b.innerHTML="";if(!s.chats.length){b.innerHTML='<div class="empty">No chats yet. Start a conversation.</div>';return}s.chats.slice(0,30).forEach(c=>{let d=document.createElement("div");d.className="history-item";d.innerHTML='<div><b></b><small></small></div><button>Open</button>';d.querySelector("b").textContent=c.title||"Chat";d.querySelector("small").textContent=(c.messages?.length||0)+" messages";d.querySelector("button").onclick=()=>{s.current=c;saveState();render();view("chat")};b.append(d)})}
-function math(q){if(!/^[\\d\\s+\\-*/().%^=]+$/.test(q)||!/[+\\-*/%^]/.test(q))return null;try{let x=q.replace("=","").replace(/\\^/g,"**");if(!/^[\\d\\s+\\-*/().%*]+$/.test(x))return null;let v=Function('"use strict";return ('+x+')')();return Number.isFinite(v)?v:null}catch{return null}}
-function localAI(q){let l=q.toLowerCase(),m=math(q);if(m!==null)return "🧮 Result\\n\\n"+q+" = "+m+"\\n\\nSend the full question if you want the working
+/* =========================================================
+   KNOX AI — FRONTEND ENGINE
+========================================================= */
+
+"use strict";
+
+/* ---------------------------------------------------------
+   CONFIGURATION
+--------------------------------------------------------- */
+
+const CONFIG = {
+  maxMessages: 20,
+  endpoint: localStorage.getItem("knox_endpoint") || "",
+  defaultName: localStorage.getItem("knox_name") || "Knox"
+};
+
+/* ---------------------------------------------------------
+   DOM
+--------------------------------------------------------- */
+
+const $ = id => document.getElementById(id);
+
+const body = document.body;
+const drawer = $("drawer");
+const shade = $("shade");
+
+const menuBtn = $("menu");
+const closeBtn = $("close");
+const newChatBtn = $("newChat");
+
+const themeBtn = $("theme");
+const profileBtn = $("profile");
+const profileModal = $("profileModal");
+
+const messages = $("messages");
+const historyBox = $("history");
+
+const input = $("input");
+const sendBtn = $("send");
+
+const attachBtn = $("attach");
+const fileInput = $("file");
+
+const imageModal = $("imageModal");
+const preview = $("preview");
+
+const toast = $("toast");
+
+const nameInput = $("name");
+const endpointInput = $("endpoint");
+const saveBtn = $("save");
+
+const leftCounter = $("left");
+const profileName = $("pname");
+const avatar = $("avatar");
+
+const chatStatus = $("chatStatus");
+
+/* ---------------------------------------------------------
+   STATE
+--------------------------------------------------------- */
+
+let conversations =
+  JSON.parse(localStorage.getItem("knox_history") || "[]");
+
+let messageCount =
+  Number(localStorage.getItem("knox_message_count") || "0");
+
+let currentConversationId = null;
+let selectedImage = null;
+
+/* ---------------------------------------------------------
+   INIT
+--------------------------------------------------------- */
+
+function init(){
+
+  loadSettings();
+  updateProfile();
+  loadTheme();
+  checkDailyReset();
+  renderHistory();
+
+}
+
+init();
+
+/* ---------------------------------------------------------
+   TOAST
+--------------------------------------------------------- */
+
+let toastTimer;
+
+function showToast(message){
+
+  clearTimeout(toastTimer);
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2200);
+
+}
+
+/* ---------------------------------------------------------
+   DRAWER
+--------------------------------------------------------- */
+
+function openDrawer(){
+
+  drawer.classList.add("open");
+  shade.classList.add("show");
+
+}
+
+function closeDrawer(){
+
+  drawer.classList.remove("open");
+  shade.classList.remove("show");
+
+}
+
+menuBtn.addEventListener("click", openDrawer);
+closeBtn.addEventListener("click", closeDrawer);
+shade.addEventListener("click", closeDrawer);
+
+/* ---------------------------------------------------------
+   VIEWS
+--------------------------------------------------------- */
+
+function showView(view){
+
+  document.querySelectorAll(".view").forEach(section => {
+    section.classList.remove("active");
+  });
+
+  const target = $(view + "View");
+
+  if(target){
+    target.classList.add("active");
+  }
+
+  closeDrawer();
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+  if(view === "history"){
+    renderHistory();
+  }
+
+}
+
+document.querySelectorAll("[data-view]").forEach(button => {
+
+  button.addEventListener("click", () => {
+    showView(button.dataset.view);
+  });
+
+});
+
+$("home").addEventListener("click", () => {
+  showView("home");
+});
+
+/* ---------------------------------------------------------
+   NEW CHAT
+--------------------------------------------------------- */
+
+function startNewChat(){
+
+  currentConversationId = null;
+
+  messages.innerHTML = "";
+
+  showView("chat");
+
+  addAssistantMessage(
+    "Hey " + getName() + " 👋\n\n" +
+    "I'm KNOX AI. What do you want to work on?"
+  );
+
+}
+
+newChatBtn.addEventListener("click", startNewChat);
+
+/* ---------------------------------------------------------
+   CHAT MESSAGES
+--------------------------------------------------------- */
+
+function addUserMessage(text){
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "msg user";
+
+  const icon = document.createElement("div");
+  icon.className = "msgicon";
+  icon.textContent = getInitial();
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = text;
+
+  wrapper.appendChild(icon);
+  wrapper.appendChild(bubble);
+
+  messages.appendChild(wrapper);
+
+  scrollChat();
+
+}
+
+function addAssistantMessage(text){
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "msg";
+
+  const icon = document.createElement("div");
+  icon.className = "msgicon";
+  icon.textContent = "🦊";
+
+  const content = document.createElement("div");
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = text;
+
+  const actions = document.createElement("div");
+  actions.className = "actions";
+
+  const copy = document.createElement("button");
+  copy.textContent = "Copy";
+
+  copy.addEventListener("click", async () => {
+
+    try{
+
+      await navigator.clipboard.writeText(text);
+
+      showToast("Copied");
+
+    }catch{
+
+      showToast("Copy failed");
+
+    }
+
+  });
+
+  actions.appendChild(copy);
+
+  content.appendChild(bubble);
+  content.appendChild(actions);
+
+  wrapper.appendChild(icon);
+  wrapper.appendChild(content);
+
+  messages.appendChild(wrapper);
+
+  scrollChat();
+
+}
+
+function addTyping(){
+
+  const wrapper = document.createElement("div");
+
+  wrapper.className = "msg";
+  wrapper.id = "typing";
+
+  const icon = document.createElement("div");
+
+  icon.className = "msgicon";
+  icon.textContent = "🦊";
+
+  const bubble = document.createElement("div");
+
+  bubble.className = "bubble typing";
+
+  bubble.innerHTML =
+    "<i></i><i></i><i></i>";
+
+  wrapper.appendChild(icon);
+  wrapper.appendChild(bubble);
+
+  messages.appendChild(wrapper);
+
+  scrollChat();
+
+}
+
+function removeTyping(){
+
+  const typing = $("typing");
+
+  if(typing){
+    typing.remove();
+  }
+
+}
+
+function scrollChat(){
+
+  setTimeout(() => {
+
+    window.scrollTo({
+      top:document.body.scrollHeight,
+      behavior:"smooth"
+    });
+
+  },50);
+
+}
+
+/* ---------------------------------------------------------
+   SEND
+--------------------------------------------------------- */
+
+async function sendMessage(){
+
+  const text = input.value.trim();
+
+  if(!text){
+    return;
+  }
+
+  if(messageCount >= CONFIG.maxMessages){
+
+    showToast("Daily message limit reached.");
+
+    return;
+
+  }
+
+  input.value = "";
+
+  autoResize();
+
+  showView("chat");
+
+  addUserMessage(text);
+
+  incrementCounter();
+
+  saveConversationMessage("user", text);
+
+  addTyping();
+
+  try{
+
+    const answer = await getAIResponse(text);
+
+    removeTyping();
+
+    addAssistantMessage(answer);
+
+    saveConversationMessage("assistant", answer);
+
+  }catch(error){
+
+    removeTyping();
+
+    addAssistantMessage(
+      "KNOX AI is ready, but the AI backend is not connected yet.\n\n" +
+      "Open Settings and add your backend endpoint."
+    );
+
+    chatStatus.textContent =
+      "Backend not connected";
+
+  }
+
+}
+
+sendBtn.addEventListener("click", sendMessage);
+
+/* ---------------------------------------------------------
+   AI BACKEND
+--------------------------------------------------------- */
+
+async function getAIResponse(text){
+
+  const endpoint =
+    localStorage.getItem("knox_endpoint") ||
+    CONFIG.endpoint ||
+    "";
+
+  /*
+    No endpoint:
+    use local responses so the website still works.
+  */
+
+  if(!endpoint){
+
+    return localResponse(text);
+
+  }
+
+  const controller =
+    new AbortController();
+
+  const timeout =
+    setTimeout(() => {
+      controller.abort();
+    },15000);
+
+  try{
+
+    const response = await fetch(endpoint,{
+
+      method:"POST",
+
+      headers:{
+        "Content-Type":"application/json"
+      },
+
+      body:JSON.stringify({
+        message:text,
+        prompt:text,
+        name:getName()
+      }),
+
+      signal:controller.signal
+
+    });
+
+    clearTimeout(timeout);
+
+    if(!response.ok){
+
+      throw new Error(
+        "HTTP " + response.status
+      );
+
+    }
+
+    const data =
+      await response.json();
+
+    const answer =
+      data.reply ||
+      data.response ||
+      data.answer ||
+      data.message ||
+      data.output;
+
+    if(!answer){
+
+      throw new Error(
+        "Backend returned no answer"
+      );
+
+    }
+
+    chatStatus.textContent =
+      "AI backend connected";
+
+    return String(answer);
+
+  }catch(error){
+
+    clearTimeout(timeout);
+
+    throw error;
+
+  }
+
+}
+
+/* ---------------------------------------------------------
+   LOCAL AI DEMO
+--------------------------------------------------------- */
+
+function localResponse(text){
+
+  const q =
+    text.toLowerCase();
+
+  if(
+    q.includes("hello") ||
+    q.includes("hi") ||
+    q.includes("hey")
+  ){
+
+    return (
+      "Hey " + getName() + " 👋\n\n" +
+      "KNOX AI is ready. Ask me something and let's work on it."
+    );
+
+  }
+
+  if(
+    q.includes("who are you") ||
+    q.includes("what are you")
+  ){
+
+    return (
+      "I'm KNOX AI 🦊 — the personal AI assistant " +
+      "interface for Knox The Great.\n\n" +
+      "The website is ready for a real AI backend."
+    );
+
+  }
+
+  if(q.includes("photosynthesis")){
+
+    return (
+      "Photosynthesis is the process plants use to make " +
+      "glucose using light energy.\n\n" +
+      "Word equation:\n\n" +
+      "carbon dioxide + water → glucose + oxygen\n\n" +
+      "It mainly occurs in chloroplasts."
+    );
+
+  }
+
+  if(q.includes("html")){
+
+    return (
+      "HTML provides the structure of a webpage.\n\n" +
+      "Example:\n\n" +
+      "<h1>Hello</h1>\n" +
+      "<p>Welcome to KNOX AI.</p>\n\n" +
+      "CSS controls appearance and JavaScript adds behaviour."
+    );
+
+  }
+
+  if(q.includes("css")){
+
+    return (
+      "CSS controls the appearance of a webpage.\n\n" +
+      "It controls colours, fonts, spacing, layouts, borders " +
+      "and responsive designs."
+    );
+
+  }
+
+  if(
+    q.includes("javascript") ||
+    q.includes("javascript")
+  ){
+
+    return (
+      "JavaScript makes websites interactive.\n\n" +
+      "KNOX AI uses JavaScript for navigation, chat, history, " +
+      "settings, themes and backend communication."
+    );
+
+  }
+
+  if(q.includes("study")){
+
+    return (
+      "Try this study session:\n\n" +
+      "1. Review your notes.\n" +
+      "2. Study the hardest topic.\n" +
+      "3. Answer practice questions.\n" +
+      "4. Check your mistakes.\n" +
+      "5. Summarize what you learned."
+    );
+
+  }
+
+  if(q.includes("quadratic")){
+
+    return (
+      "For ax² + bx + c = 0, the quadratic formula is:\n\n" +
+      "x = (-b ± √(b² - 4ac)) / 2a\n\n" +
+      "Send the actual equation and I can work through it."
+    );
+
+  }
+
+  return (
+    "I received your message:\n\n" +
+    "“" + text + "”\n\n" +
+    "The KNOX AI frontend is working. " +
+    "Connect your backend in Settings for full AI responses."
+  );
+
+}
+
+/* ---------------------------------------------------------
+   QUICK PROMPTS
+--------------------------------------------------------- */
+
+document.querySelectorAll("[data-prompt]").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    input.value =
+      button.dataset.prompt;
+
+    sendMessage();
+
+  });
+
+});
+
+/* ---------------------------------------------------------
+   TEXT INPUT
+--------------------------------------------------------- */
+
+input.addEventListener("keydown", event => {
+
+  if(
+    event.key === "Enter" &&
+    !event.shiftKey
+  ){
+
+    event.preventDefault();
+
+    sendMessage();
+
+  }
+
+});
+
+input.addEventListener("input", autoResize);
+
+function autoResize(){
+
+  input.style.height = "auto";
+
+  input.style.height =
+    Math.min(input.scrollHeight,120) + "px";
+
+}
+
+/* ---------------------------------------------------------
+   COUNTER
+--------------------------------------------------------- */
+
+function incrementCounter(){
+
+  messageCount++;
+
+  localStorage.setItem(
+    "knox_message_count",
+    String(messageCount)
+  );
+
+  updateCounter();
+
+}
+
+function updateCounter(){
+
+  const remaining =
+    Math.max(
+      CONFIG.maxMessages - messageCount,
+      0
+    );
+
+  leftCounter.textContent =
+    remaining;
+
+  sendBtn.disabled =
+    remaining <= 0;
+
+}
+
+/* ---------------------------------------------------------
+   HISTORY
+--------------------------------------------------------- */
+
+function saveConversationMessage(role,text){
+
+  if(!currentConversationId){
+
+    currentConversationId =
+      Date.now().toString();
+
+    conversations.unshift({
+
+      id:currentConversationId,
+
+      title:
+        text.length > 45
+          ? text.slice(0,45) + "..."
+          : text,
+
+      messages:[],
+
+      created:
+        new Date().toISOString()
+
+    });
+
+  }
+
+  const conversation =
+    conversations.find(
+      item => item.id === currentConversationId
+    );
+
+  if(!conversation){
+    return;
+  }
+
+  conversation.messages.push({
+
+    role:role,
+    text:text,
+    time:new Date().toISOString()
+
+  });
+
+  conversation.updated =
+    new Date().toISOString();
+
+  localStorage.setItem(
+    "knox_history",
+    JSON.stringify(conversations)
+  );
+
+  renderHistory();
+
+}
+
+function renderHistory(){
+
+  historyBox.innerHTML = "";
+
+  if(!conversations.length){
+
+    historyBox.innerHTML =
+      '<div class="empty">' +
+      'No conversations yet.<br><br>' +
+      'Start chatting with KNOX AI.' +
+      '</div>';
+
+    return;
+
+  }
+
+  conversations.forEach(conversation => {
+
+    const item =
+      document.createElement("div");
+
+    item.className =
+      "history-item";
+
+    const info =
+      document.createElement("div");
+
+    const title =
+      document.createElement("b");
+
+    title.textContent =
+      conversation.title || "New chat";
+
+    const date =
+      document.createElement("small");
+
+    date.textContent =
+      formatDate(
+        conversation.updated ||
+        conversation.created
+      );
+
+    info.appendChild(title);
+    info.appendChild(date);
+
+    const open =
+      document.createElement("button");
+
+    open.textContent =
+      "Open";
+
+    open.addEventListener("click", () => {
+
+      openConversation(
+        conversation.id
+      );
+
+    });
+
+    const del =
+      document.createElement("button");
+
+    del.textContent =
+      "Delete";
+
+    del.addEventListener("click", () => {
+
+      deleteConversation(
+        conversation.id
+      );
+
+    });
+
+    item.appendChild(info);
+    item.appendChild(open);
+    item.appendChild(del);
+
+    historyBox.appendChild(item);
+
+  });
+
+}
+
+function openConversation(id){
+
+  const conversation =
+    conversations.find(
+      item => item.id === id
+    );
+
+  if(!conversation){
+    return;
+  }
+
+  currentConversationId = id;
+
+  messages.innerHTML = "";
+
+  conversation.messages.forEach(message => {
+
+    if(message.role === "user"){
+
+      addUserMessage(message.text);
+
+    }else{
+
+      addAssistantMessage(message.text);
+
+    }
+
+  });
+
+  showView("chat");
+
+}
+
+function deleteConversation(id){
+
+  conversations =
+    conversations.filter(
+      item => item.id !== id
+    );
+
+  localStorage.setItem(
+    "knox_history",
+    JSON.stringify(conversations)
+  );
+
+  if(currentConversationId === id){
+
+    currentConversationId = null;
+
+    messages.innerHTML = "";
+
+  }
+
+  renderHistory();
+
+  showToast("Chat deleted");
+
+}
+
+function formatDate(value){
+
+  if(!value){
+    return "";
+  }
+
+  return new Date(value).toLocaleString();
+
+}
+
+/* ---------------------------------------------------------
+   CLEAR DATA
+--------------------------------------------------------- */
+
+$("clear").addEventListener("click", () => {
+
+  if(
+    !confirm(
+      "Clear KNOX AI local history, settings and profile?"
+    )
+  ){
+    return;
+  }
+
+  localStorage.removeItem("knox_history");
+  localStorage.removeItem("knox_name");
+  localStorage.removeItem("knox_endpoint");
+  localStorage.removeItem("knox_message_count");
+  localStorage.removeItem("knox_counter_date");
+
+  conversations = [];
+  messageCount = 0;
+  currentConversationId = null;
+
+  messages.innerHTML = "";
+
+  nameInput.value = "Knox";
+  endpointInput.value = "";
+
+  updateProfile();
+  updateCounter();
+  renderHistory();
+
+  showToast("Local data cleared");
+
+});
+
+/* ---------------------------------------------------------
+   THEME
+--------------------------------------------------------- */
+
+function loadTheme(){
+
+  const theme =
+    localStorage.getItem("knox_theme");
+
+  if(theme === "dark"){
+
+    body.classList.add("dark");
+
+    themeBtn.textContent =
+      "☀";
+
+  }else{
+
+    body.classList.remove("dark");
+
+    themeBtn.textContent =
+      "☾";
+
+  }
+
+}
+
+themeBtn.addEventListener("click", () => {
+
+  body.classList.toggle("dark");
+
+  const dark =
+    body.classList.contains("dark");
+
+  localStorage.setItem(
+    "knox_theme",
+    dark ? "dark" : "light"
+  );
+
+  themeBtn.textContent =
+    dark ? "☀" : "☾";
+
+});
+
+/* ---------------------------------------------------------
+   PROFILE
+--------------------------------------------------------- */
+
+function getName(){
+
+  return (
+    localStorage.getItem("knox_name") ||
+    "Knox"
+  );
+
+}
+
+function getInitial(){
+
+  const name =
+    getName().trim();
+
+  return name
+    ? name.charAt(0).toUpperCase()
+    : "K";
+
+}
+
+function updateProfile(){
+
+  profileName.textContent =
+    getName();
+
+  avatar.textContent =
+    getInitial();
+
+}
+
+profileBtn.addEventListener("click", () => {
+
+  profileModal.classList.add("show");
+
+});
+
+$("editProfile").addEventListener("click", () => {
+
+  profileModal.classList.remove("show");
+
+  showView("settings");
+
+  setTimeout(() => {
+    nameInput.focus();
+  },100);
+
+});
+
+/* ---------------------------------------------------------
+   SETTINGS
+--------------------------------------------------------- */
+
+function loadSettings(){
+
+  nameInput.value =
+    localStorage.getItem("knox_name") ||
+    CONFIG.defaultName;
+
+  endpointInput.value =
+    localStorage.getItem("knox_endpoint") ||
+    CONFIG.endpoint ||
+    "";
+
+}
+
+saveBtn.addEventListener("click", () => {
+
+  let name =
+    nameInput.value.trim();
+
+  if(!name){
+    name = "Knox";
+  }
+
+  const endpoint =
+    endpointInput.value.trim();
+
+  localStorage.setItem(
+    "knox_name",
+    name
+  );
+
+  localStorage.setItem(
+    "knox_endpoint",
+    endpoint
+  );
+
+  updateProfile();
+
+  showToast("Settings saved");
+
+});
+
+/* ---------------------------------------------------------
+   BACK
+--------------------------------------------------------- */
+
+$("back").addEventListener("click", () => {
+
+  showView("home");
+
+});
+
+/* ---------------------------------------------------------
+   MORE
+--------------------------------------------------------- */
+
+$("more").addEventListener("click", () => {
+
+  if(
+    confirm(
+      "Start a new conversation?"
+    )
+  ){
+
+    startNewChat();
+
+  }
+
+});
+
+/* ---------------------------------------------------------
+   IMAGE ATTACHMENT
+--------------------------------------------------------- */
+
+attachBtn.addEventListener("click", () => {
+
+  fileInput.click();
+
+});
+
+fileInput.addEventListener("change", event => {
+
+  const file =
+    event.target.files[0];
+
+  if(!file){
+    return;
+  }
+
+  if(!file.type.startsWith("image/")){
+
+    showToast(
+      "Please select an image."
+    );
+
+    return;
+
+  }
+
+  selectedImage = file;
+
+  const reader =
+    new FileReader();
+
+  reader.onload = event => {
+
+    preview.src =
+      event.target.result;
+
+    imageModal.classList.add("show");
+
+  };
+
+  reader.readAsDataURL(file);
+
+});
+
+$("askImage").addEventListener("click", () => {
+
+  imageModal.classList.remove("show");
+
+  showView("chat");
+
+  const filename =
+    selectedImage
+      ? selectedImage.name
+      : "image";
+
+  addUserMessage(
+    "I attached an image: " + filename
+  );
+
+  incrementCounter();
+
+  addAssistantMessage(
+    "The image was attached successfully.\n\n" +
+    "Full image understanding will work once the KNOX AI backend supports image/vision input."
+  );
+
+  selectedImage = null;
+
+  fileInput.value = "";
+
+});
+
+/* ---------------------------------------------------------
+   MODALS
+--------------------------------------------------------- */
+
+document.querySelectorAll("[data-close]").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    const modal =
+      $(button.dataset.close);
+
+    if(modal){
+      modal.classList.remove("show");
+    }
+
+  });
+
+});
+
+/* Close modal when clicking outside the modal box */
+
+document.querySelectorAll(".modal").forEach(modal => {
+
+  modal.addEventListener("click", event => {
+
+    if(event.target === modal){
+
+      modal.classList.remove("show");
+
+    }
+
+  });
+
+});
+
+/* ---------------------------------------------------------
+   ESCAPE KEY
+--------------------------------------------------------- */
+
+document.addEventListener("keydown", event => {
+
+  if(event.key !== "Escape"){
+    return;
+  }
+
+  document.querySelectorAll(".modal.show").forEach(modal => {
+    modal.classList.remove("show");
+  });
+
+  closeDrawer();
+
+});
+
+/* ---------------------------------------------------------
+   DAILY MESSAGE RESET
+--------------------------------------------------------- */
+
+function checkDailyReset(){
+
+  const today =
+    new Date().toISOString().slice(0,10);
+
+  const savedDate =
+    localStorage.getItem("knox_counter_date");
+
+  if(savedDate !== today){
+
+    messageCount = 0;
+
+    localStorage.setItem(
+      "knox_message_count",
+      "0"
+    );
+
+    localStorage.setItem(
+      "knox_counter_date",
+      today
+    );
+
+  }
+
+  updateCounter();
+
+}
+
+/* ---------------------------------------------------------
+   CHAT STATUS
+--------------------------------------------------------- */
+
+function updateChatStatus(){
+
+  const endpoint =
+    localStorage.getItem("knox_endpoint") || "";
+
+  if(endpoint){
+
+    chatStatus.textContent =
+      "AI backend connected";
+
+  }else{
+
+    chatStatus.textContent =
+      "Demo mode";
+
+  }
+
+}
+
+/* ---------------------------------------------------------
+   INITIAL CHAT
+--------------------------------------------------------- */
+
+function ensureChatReady(){
+
+  if(
+    currentConversationId ||
+    messages.children.length
+  ){
+    return;
+  }
+
+  addAssistantMessage(
+    "Hey " + getName() + " 👋\n\n" +
+    "I'm KNOX AI. What do you want to work on?"
+  );
+
+}
+
+/* ---------------------------------------------------------
+   SETTINGS UPDATE
+--------------------------------------------------------- */
+
+function refreshSettingsUI(){
+
+  nameInput.value =
+    getName();
+
+  endpointInput.value =
+    localStorage.getItem("knox_endpoint") || "";
+
+  updateProfile();
+  updateChatStatus();
+
+}
+
+/* ---------------------------------------------------------
+   PROFILE NAME LIVE UPDATE
+--------------------------------------------------------- */
+
+nameInput.addEventListener("input", () => {
+
+  const value =
+    nameInput.value.trim();
+
+  if(!value){
+    return;
+  }
+
+  profileName.textContent =
+    value;
+
+  avatar.textContent =
+    value.charAt(0).toUpperCase();
+
+});
+
+/* ---------------------------------------------------------
+   ENDPOINT VALIDATION
+--------------------------------------------------------- */
+
+function validEndpoint(value){
+
+  if(!value){
+    return true;
+  }
+
+  try{
+
+    const url =
+      new URL(value, window.location.href);
+
+    return (
+      url.protocol === "http:" ||
+      url.protocol === "https:"
+    );
+
+  }catch{
+
+    return false;
+
+  }
+
+}
+
+/* Replace the original save handler with validation */
+
+saveBtn.addEventListener("click", () => {
+
+  const name =
+    nameInput.value.trim() || "Knox";
+
+  const endpoint =
+    endpointInput.value.trim();
+
+  if(!validEndpoint(endpoint)){
+
+    showToast(
+      "Enter a valid HTTP/HTTPS endpoint."
+    );
+
+    endpointInput.focus();
+
+    return;
+
+  }
+
+  localStorage.setItem(
+    "knox_name",
+    name
+  );
+
+  localStorage.setItem(
+    "knox_endpoint",
+    endpoint
+  );
+
+  updateProfile();
+  updateChatStatus();
+
+  showToast(
+    endpoint
+      ? "Settings saved • AI endpoint ready"
+      : "Settings saved • Demo mode"
+  );
+
+});
+
+/* ---------------------------------------------------------
+   CHAT TITLE UPDATE
+--------------------------------------------------------- */
+
+function updateConversationTitle(text){
+
+  if(!currentConversationId){
+    return;
+  }
+
+  const conversation =
+    conversations.find(
+      item => item.id === currentConversationId
+    );
+
+  if(!conversation){
+    return;
+  }
+
+  if(
+    !conversation.title ||
+    conversation.title === "New chat"
+  ){
+
+    conversation.title =
+      text.length > 45
+        ? text.slice(0,45) + "..."
+        : text;
+
+  }
+
+  conversation.updated =
+    new Date().toISOString();
+
+  localStorage.setItem(
+    "knox_history",
+    JSON.stringify(conversations)
+  );
+
+}
+
+/* ---------------------------------------------------------
+   IMPROVED MESSAGE SAVING
+--------------------------------------------------------- */
+
+const originalSaveConversationMessage =
+  saveConversationMessage;
+
+/*
+   Wrap the original history function so the first
+   user message becomes the conversation title.
+*/
+
+saveConversationMessage = function(role,text){
+
+  originalSaveConversationMessage(role,text);
+
+  if(role === "user"){
+
+    updateConversationTitle(text);
+
+  }
+
+};
+
+/* ---------------------------------------------------------
+   IMAGE MODAL CLEANUP
+--------------------------------------------------------- */
+
+function clearSelectedImage(){
+
+  selectedImage = null;
+
+  fileInput.value = "";
+
+  if(preview){
+    preview.removeAttribute("src");
+  }
+
+}
+
+$("askImage").addEventListener("click", () => {
+
+  if(!selectedImage){
+    return;
+  }
+
+  const filename =
+    selectedImage.name;
+
+  imageModal.classList.remove("show");
+
+  showView("chat");
+
+  const message =
+    "I attached an image: " + filename;
+
+  addUserMessage(message);
+
+  incrementCounter();
+
+  addAssistantMessage(
+    "The image was attached successfully.\n\n" +
+    "KNOX AI's frontend can receive the image, but full " +
+    "image analysis requires a vision-capable backend."
+  );
+
+  clearSelectedImage();
+
+});
+
+/* ---------------------------------------------------------
+   CANCEL IMAGE
+--------------------------------------------------------- */
+
+document.querySelectorAll("[data-close='imageModal']")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      clearSelectedImage();
+
+    });
+
+  });
+
+/* ---------------------------------------------------------
+   ENTER KEY SUPPORT
+--------------------------------------------------------- */
+
+document.addEventListener("keydown", event => {
+
+  if(
+    event.key === "Enter" &&
+    event.ctrlKey
+  ){
+
+    event.preventDefault();
+
+    sendMessage();
+
+  }
+
+});
+
+/* ---------------------------------------------------------
+   PAGE VISIBILITY
+--------------------------------------------------------- */
+
+document.addEventListener("visibilitychange", () => {
+
+  if(!document.hidden){
+
+    checkDailyReset();
+    updateProfile();
+    updateChatStatus();
+
+  }
+
+});
+
+/* ---------------------------------------------------------
+   BEFORE UNLOAD
+--------------------------------------------------------- */
+
+window.addEventListener("beforeunload", () => {
+
+  localStorage.setItem(
+    "knox_history",
+    JSON.stringify(conversations)
+  );
+
+});
+
+/* ---------------------------------------------------------
+   FINAL INIT
+--------------------------------------------------------- */
+
+checkDailyReset();
+refreshSettingsUI();
+updateCounter();
+renderHistory();
+updateChatStatus();
+
+/*
+   Keep the home screen as the default screen.
+   The user can open Chat, History, Study, Writing,
+   Coding and Settings from the interface.
+*/
+
+showView("home");
+
