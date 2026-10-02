@@ -1,1814 +1,603 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ff7200">
-<meta name="description" content="KNOX AI — your personal AI assistant">
-<title>KNOX AI — Knox The Great</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ff7200">
+  <meta name="description" content="KNOX AI — your personal AI assistant">
+  <title>KNOX AI — Knox The Great</title>
 
-<style>
-:root{
-  --o:#ff7200;
-  --bg:#fffaf3;
-  --card:#fff;
-  --ink:#292522;
-  --muted:#77716c;
-  --line:#eadfd4;
-  --shadow:0 7px 0 rgba(42,33,25,.06),0 3px 18px rgba(42,33,25,.06);
-}
-*{box-sizing:border-box}
-html,body{
-  margin:0;
-  min-height:100%;
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-}
-body.dark{
-  --bg:#151312;
-  --card:#211f1d;
-  --ink:#f8f5f1;
-  --muted:#aaa39b;
-  --line:#39332e;
-  --shadow:0 7px 0 rgba(0,0,0,.18),0 3px 18px rgba(0,0,0,.2);
-}
-button,input,textarea{font:inherit}
-button{border:0;cursor:pointer;color:inherit}
-
-.top{
-  height:76px;
-  background:var(--o);
-  display:flex;
-  align-items:center;
-  padding:0 14px;
-  gap:10px;
-  position:sticky;
-  top:0;
-  z-index:20;
-  box-shadow:0 3px 0 rgba(0,0,0,.08);
-}
-.menu,.round,.profile,.usage{
-  background:rgba(255,255,255,.16);
-  border:1px solid rgba(255,255,255,.34);
-  color:#fff;
-}
-.menu,.round{
-  width:44px;height:44px;border-radius:14px;font-size:20px;
-}
-.brand{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  background:transparent;
-  color:#fff;
-  font-weight:800;
-  font-size:17px;
-  padding:5px;
-}
-.fox{font-size:28px}
-.actions{
-  margin-left:auto;
-  display:flex;
-  gap:6px;
-  align-items:center;
-}
-.usage,.profile{
-  height:42px;
-  border-radius:14px;
-  padding:0 10px;
-  font-size:12px;
-  font-weight:800;
-}
-.profile{
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.avatar{
-  width:27px;height:27px;
-  background:#fff;
-  color:var(--o);
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-}
-.profile-name{
-  max-width:75px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-main{
-  max-width:930px;
-  margin:auto;
-  padding:30px 14px 125px;
-}
-.view{display:none}
-.view.active{display:block}
-
-.hero{
-  text-align:center;
-  margin:0 auto 27px;
-  max-width:760px;
-}
-.pill{
-  display:inline-block;
-  background:var(--card);
-  border:2px solid #f0dcc7;
-  border-radius:28px;
-  padding:10px 17px;
-  color:#d76a14;
-  font-weight:800;
-}
-.hero h1{
-  font-size:42px;
-  line-height:1.08;
-  letter-spacing:-1.7px;
-  margin:22px 0 12px;
-}
-.hero h1 span{color:var(--o)}
-.hero p{
-  color:var(--muted);
-  line-height:1.55;
-  font-size:16px;
-  margin:0;
-}
-
-.cards,.tools,.history{display:grid;gap:13px}
-
-.card{
-  display:grid;
-  grid-template-columns:70px 1fr 25px;
-  align-items:center;
-  gap:14px;
-  text-align:left;
-  background:var(--card);
-  border:2px solid var(--line);
-  border-radius:23px;
-  padding:13px 17px;
-  box-shadow:var(--shadow);
-  transition:.16s;
-}
-.card:hover,.tool:hover{transform:translateY(-2px)}
-.icon{
-  width:60px;height:60px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  font-size:29px;
-  border:4px solid currentColor;
-}
-.orange{color:#f57a13}
-.green{color:#5fc41f}
-.blue{color:#1aa9df}
-.purple{color:#b96ee5}
-.indigo{color:#637bf0}
-.gold{color:#d8a300}
-.card b{font-size:18px}
-.card small{
-  display:block;
-  color:var(--muted);
-  margin-top:4px;
-}
-.arrow{
-  font-size:29px;
-  color:#aaa;
-  text-align:right;
-}
-
-.trust{
-  margin:16px auto;
-  max-width:900px;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:14px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
-.trust small{
-  display:block;
-  color:var(--muted);
-  margin-top:3px;
-}
-
-.composer-wrap{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  z-index:30;
-  background:rgba(255,250,243,.94);
-  backdrop-filter:blur(13px);
-  border-top:2px solid var(--o);
-  padding:8px max(8px,calc((100vw - 930px)/2)) 11px;
-}
-.dark .composer-wrap{background:rgba(21,19,18,.94)}
-.composer{
-  display:flex;
-  align-items:center;
-  gap:4px;
-  background:var(--card);
-  border:2px solid var(--line);
-  border-radius:21px;
-  padding:5px;
-  box-shadow:0 8px 25px rgba(0,0,0,.08);
-}
-textarea{
-  flex:1;
-  border:0;
-  outline:0;
-  background:transparent;
-  color:var(--ink);
-  resize:none;
-  padding:13px 7px;
-  max-height:120px;
-}
-.send,.attach{
-  width:45px;height:45px;border-radius:15px;
-}
-.attach{
-  background:transparent;
-  color:var(--muted);
-  font-size:22px;
-}
-.send{
-  background:var(--o);
-  color:#fff;
-  font-size:20px;
-  box-shadow:0 3px 0 #c95a00;
-}
-.send:disabled{opacity:.5;cursor:not-allowed}
-.note{
-  text-align:center;
-  color:var(--muted);
-  font-size:10px;
-  padding-top:5px;
-}
-
-.drawer{
-  position:fixed;
-  left:0;top:0;bottom:0;
-  width:min(330px,88vw);
-  z-index:60;
-  background:var(--card);
-  border-right:1px solid var(--line);
-  padding:18px;
-  transform:translateX(-105%);
-  transition:.22s;
-  box-shadow:12px 0 40px rgba(0,0,0,.16);
-  display:flex;
-  flex-direction:column;
-}
-.drawer.open{transform:translateX(0)}
-.drawer-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.close{
-  background:transparent;
-  font-size:27px;
-  color:var(--muted);
-}
-.new{
-  background:var(--o);
-  color:#fff;
-  border-radius:14px;
-  padding:13px;
-  font-weight:800;
-  margin:23px 0 10px;
-}
-.nav,.bottom{display:grid;gap:4px}
-.nav button,.bottom button{
-  background:transparent;
-  text-align:left;
-  padding:13px;
-  border-radius:12px;
-  color:var(--muted);
-  font-weight:650;
-}
-.nav button:hover,.bottom button:hover{
-  background:var(--bg);
-  color:var(--ink);
-}
-.bottom{
-  margin-top:auto;
-  border-top:1px solid var(--line);
-  padding-top:10px;
-}
-.shade{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.4);
-  z-index:55;
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
-}
-.shade.show{
-  opacity:1;
-  pointer-events:auto;
-}
-
-.chathead{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  border-bottom:1px solid var(--line);
-  padding-bottom:15px;
-}
-.back,.more{
-  width:42px;height:42px;
-  border-radius:13px;
-  background:var(--card);
-  border:1px solid var(--line);
-}
-.chathead div{flex:1}
-.chathead small{
-  display:block;
-  color:var(--muted);
-  margin-top:3px;
-}
-.messages{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  padding:18px 0;
-}
-.msg{
-  display:flex;
-  gap:9px;
-  max-width:92%;
-}
-.msg.user{
-  margin-left:auto;
-  flex-direction:row-reverse;
-}
-.msgicon{
-  width:34px;height:34px;
-  flex:0 0 34px;
-  border-radius:11px;
-  background:var(--o);
-  color:#fff;
-  display:grid;
-  place-items:center;
-}
-.msg.user .msgicon{background:#3d3935}
-.bubble{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:11px 13px;
-  line-height:1.55;
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-}
-.msg.user .bubble{
-  background:var(--o);
-  border-color:var(--o);
-  color:#fff;
-}
-.actions{
-  margin-top:5px;
-}
-.actions button{
-  background:transparent;
-  color:var(--muted);
-  font-size:12px;
-  margin-right:8px;
-}
-.typing i{
-  display:inline-block;
-  width:6px;height:6px;
-  border-radius:50%;
-  background:var(--muted);
-  margin:0 2px;
-  animation:b 1s infinite;
-}
-.typing i:nth-child(2){animation-delay:.15s}
-.typing i:nth-child(3){animation-delay:.3s}
-@keyframes b{50%{opacity:.2}}
-
-.page h2{
-  font-size:30px;
-  margin:0 0 6px;
-}
-.page p{
-  color:var(--muted);
-  margin:0 0 20px;
-}
-.tool{
-  background:var(--card);
-  border:2px solid var(--line);
-  border-radius:21px;
-  padding:20px;
-  text-align:left;
-  box-shadow:var(--shadow);
-  transition:.16s;
-}
-.tool span{
-  font-size:29px;
-  display:block;
-  margin-bottom:7px;
-}
-.tool small{
-  display:block;
-  color:var(--muted);
-  margin-top:5px;
-}
-.history-item{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:17px;
-  padding:14px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.history-item div{
-  flex:1;
-  min-width:0;
-}
-.history-item b,.history-item small{
-  display:block;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.history-item small{
-  color:var(--muted);
-  margin-top:4px;
-}
-.history-item button{
-  background:#fff1e5;
-  color:#cc5c0a;
-  border-radius:10px;
-  padding:8px 10px;
-}
-.settings{
-  max-width:650px;
-  background:var(--card);
-  border:2px solid var(--line);
-  border-radius:21px;
-  padding:19px;
-  display:grid;
-  gap:15px;
-}
-.settings label{
-  font-weight:700;
-  display:grid;
-  gap:7px;
-}
-.settings input{
-  padding:12px;
-  border:1px solid var(--line);
-  border-radius:13px;
-  background:var(--bg);
-  color:var(--ink);
-  outline:0;
-}
-.settings small{
-  color:var(--muted);
-  line-height:1.5;
-}
-.save{
-  background:var(--o);
-  color:#fff;
-  border-radius:13px;
-  padding:12px;
-  font-weight:800;
-}
-.modal{
-  position:fixed;
-  inset:0;
-  z-index:90;
-  background:rgba(0,0,0,.5);
-  display:none;
-  place-items:center;
-  padding:18px;
-}
-.modal.show{display:grid}
-.box{
-  position:relative;
-  background:var(--card);
-  border-radius:23px;
-  padding:24px;
-  width:min(450px,100%);
-  text-align:center;
-}
-.box-x{
-  position:absolute;
-  right:12px;
-  top:8px;
-  background:transparent;
-  font-size:27px;
-  color:var(--muted);
-}
-.box img{
-  max-width:100%;
-  max-height:55vh;
-  border-radius:15px;
-  margin:12px 0;
-}
-.box .save{width:100%}
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:105px;
-  transform:translate(-50%,15px);
-  background:#292522;
-  color:#fff;
-  border-radius:13px;
-  padding:10px 14px;
-  opacity:0;
-  z-index:100;
-  pointer-events:none;
-  transition:.2s;
-}
-.toast.show{
-  opacity:1;
-  transform:translate(-50%,0);
-}
-.empty{
-  text-align:center;
-  color:var(--muted);
-  padding:45px 15px;
-  background:var(--card);
-  border:1px dashed var(--line);
-  border-radius:19px;
-}
-.status{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:4px;
-}
-.status.online{color:#38a852}
-
-@media(max-width:700px){
-  .profile-name{display:none}
-  .usage{font-size:11px}
-  .hero h1{font-size:35px}
-  .hero p{font-size:14px}
-  .card{
-    grid-template-columns:58px 1fr 20px;
-    padding:12px;
-  }
-  .icon{
-    width:50px;height:50px;
-    font-size:25px;
-  }
-  .card b{font-size:16px}
-  .card small{font-size:12px}
-  .tools{grid-template-columns:1fr}
-  main{padding-top:25px}
-  .top{height:69px}
-}
-</style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<aside class="drawer" id="drawer">
-  <div class="drawer-head">
-    <b>🦊 KNOX AI</b>
-    <button class="close" id="close">×</button>
-  </div>
+  <!-- DRAWER -->
+  <aside class="drawer" id="drawer">
 
-  <button class="new" id="newChat">＋ New chat</button>
-
-  <nav class="nav">
-    <button data-view="home">⌂ &nbsp;Home</button>
-    <button data-view="history">◷ &nbsp;Chat history</button>
-    <button data-view="study">▣ &nbsp;Study tools</button>
-    <button data-view="writing">✎ &nbsp;Writing</button>
-    <button data-view="coding">&lt;/&gt; &nbsp;Coding</button>
-  </nav>
-
-  <div class="bottom">
-    <button data-view="settings">⚙ &nbsp;Settings</button>
-    <button id="clear">⌫ &nbsp;Clear local data</button>
-  </div>
-</aside>
-
-<div class="shade" id="shade"></div>
-
-<header class="top">
-  <button class="menu" id="menu">☰</button>
-
-  <button class="brand" id="home">
-    <span class="fox">🦊</span>
-    KNOX <b>AI</b>
-  </button>
-
-  <div class="actions">
-    <button class="round" id="theme">☾</button>
-
-    <button class="usage">
-      <span id="left">∞</span>
-    </button>
-
-    <button class="profile" id="profile">
-      <span class="avatar" id="avatar">K</span>
-      <span class="profile-name" id="pname">Knox</span>
-    </button>
-  </div>
-</header>
-
-<main>
-
-<section class="view active" id="homeView">
-  <div class="hero">
-    <div class="pill">🦊 Hey, I'm Knox</div>
-
-    <h1>
-      What are we<br>
-      <span>tackling today?</span>
-    </h1>
-
-    <p>
-      Pick a topic below to get started — or type your own question in the box.
-    </p>
-  </div>
-
-  <div class="cards">
-
-    <button class="card" data-prompt="Solve a quadratic equation step by step. Explain the method clearly.">
-      <span class="icon orange">📐</span>
-      <span><b>QUADRATIC</b><small>Step-by-step algebra</small></span>
-      <i class="arrow">›</i>
-    </button>
-
-    <button class="card" data-prompt="Explain photosynthesis simply, including the word equation and key stages.">
-      <span class="icon green">🌿</span>
-      <span><b>PHOTOSYNTHESIS</b><small>Biology explained</small></span>
-      <i class="arrow">›</i>
-    </button>
-
-    <button class="card" data-prompt="Give me a clear school-level breakdown of World War 1: causes, major events and effects.">
-      <span class="icon blue">🌍</span>
-      <span><b>WORLD WAR 1</b><small>History breakdown</small></span>
-      <i class="arrow">›</i>
-    </button>
-
-    <button class="card" data-prompt="Help me structure a strong school essay. Show introduction, body paragraphs and conclusion.">
-      <span class="icon purple">✍️</span>
-      <span><b>THESIS</b><small>Essay writing help</small></span>
-      <i class="arrow">›</i>
-    </button>
-
-    <button class="card" data-prompt="Teach me HTML, CSS and JavaScript by building a small project.">
-      <span class="icon indigo">💻</span>
-      <span><b>CODING</b><small>Build and learn</small></span>
-      <i class="arrow">›</i>
-    </button>
-
-    <button class="card" data-prompt="Make a short study plan for today's revision.">
-      <span class="icon gold">🎯</span>
-      <span><b>STUDY PLAN</b><small>Focus and revise</small></span>
-      <i class="arrow">›</i>
-    </button>
-
-  </div>
-
-  <div class="trust">
-    ⚡
-    <div>
-      <b>KNOX AI is connected</b>
-      <small>Powered through the KNOX AI backend.</small>
-    </div>
-  </div>
-</section>
-
-<section class="view" id="chatView">
-  <div class="chathead">
-    <button class="back" id="back">←</button>
-
-    <div>
-      <b>KNOX AI</b>
-      <small id="chatStatus">Connecting to KNOX AI...</small>
+    <div class="drawer-head">
+      <b>🦊 KNOX AI</b>
+      <button class="close" id="close">×</button>
     </div>
 
-    <button class="more" id="more">⋯</button>
-  </div>
+    <button class="new" id="newChat">＋ New chat</button>
 
-  <div class="messages" id="messages"></div>
-</section>
+    <nav class="nav">
+      <button data-view="home">⌂ &nbsp;Home</button>
+      <button data-view="history">◷ &nbsp;Chat history</button>
+      <button data-view="study">▣ &nbsp;Study tools</button>
+      <button data-view="writing">✎ &nbsp;Writing</button>
+      <button data-view="coding">&lt;/&gt; &nbsp;Coding</button>
+    </nav>
 
-<section class="view" id="historyView">
-  <div class="page">
-    <h2>Chat history</h2>
-    <p>Your conversations are stored locally on this device.</p>
-  </div>
-  <div class="history" id="history"></div>
-</section>
+    <div class="bottom">
+      <button data-view="settings">⚙ &nbsp;Settings</button>
+      <button id="clear">⌫ &nbsp;Clear local data</button>
+    </div>
 
-<section class="view" id="studyView">
-  <div class="page">
-    <h2>Study tools</h2>
-    <p>Quick starters for learning and revision.</p>
-  </div>
+  </aside>
 
-  <div class="tools">
-    <button class="tool" data-prompt="Explain a difficult topic to me like I'm learning it for the first time.">
-      <span>🧠</span>
-      <b>Explain a topic</b>
-      <small>Simple, clear teaching</small>
+  <div class="shade" id="shade"></div>
+
+
+  <!-- HEADER -->
+  <header class="top">
+
+    <button class="menu" id="menu">☰</button>
+
+    <button class="brand" id="homeButton">
+      <span class="fox">🦊</span>
+      KNOX <b>AI</b>
     </button>
 
-    <button class="tool" data-prompt="Create five practice questions and put the answers after the questions.">
-      <span>📝</span>
-      <b>Practice questions</b>
-      <small>Test your knowledge</small>
-    </button>
+    <div class="actions">
 
-    <button class="tool" data-prompt="Turn this topic into short revision notes with headings and bullet points.">
-      <span>📚</span>
-      <b>Revision notes</b>
-      <small>Fast cramming format</small>
-    </button>
+      <button class="round" id="theme" title="Toggle theme">
+        ☾
+      </button>
 
-    <button class="tool" data-prompt="Help me calculate this maths problem and show the working.">
-      <span>🧮</span>
-      <b>Math helper</b>
-      <small>Show the working</small>
-    </button>
-  </div>
-</section>
+      <button class="usage" title="Usage">
+        <span id="left">∞</span>
+      </button>
 
-<section class="view" id="writingView">
-  <div class="page">
-    <h2>Writing studio</h2>
-    <p>Plan, rewrite and improve your writing.</p>
-  </div>
+      <button class="profile" id="profile">
+        <span class="avatar" id="avatar">K</span>
+        <span class="profile-name" id="pname">Knox</span>
+      </button>
 
-  <div class="tools">
-    <button class="tool" data-prompt="Help me write a clear school essay on a topic I will provide.">
-      <span>✍️</span>
-      <b>Essay helper</b>
-      <small>Structure and ideas</small>
-    </button>
+    </div>
 
-    <button class="tool" data-prompt="Rewrite my text so it sounds natural, clear and confident without changing the meaning.">
-      <span>✨</span>
-      <b>Rewrite</b>
-      <small>Clearer wording</small>
-    </button>
+  </header>
 
-    <button class="tool" data-prompt="Summarize the text I provide into concise bullet points.">
-      <span>📌</span>
-      <b>Summarize</b>
-      <small>Key points only</small>
-    </button>
 
-    <button class="tool" data-prompt="Check my grammar and explain the important corrections.">
-      <span>🔎</span>
-      <b>Grammar check</b>
-      <small>Learn from corrections</small>
-    </button>
-  </div>
-</section>
+  <!-- MAIN -->
+  <main>
 
-<section class="view" id="codingView">
-  <div class="page">
-    <h2>Coding lab</h2>
-    <p>Learn web development and debug your projects.</p>
-  </div>
+    <!-- HOME -->
+    <section class="view active" id="homeView">
 
-  <div class="tools">
-    <button class="tool" data-prompt="Teach me HTML, CSS and JavaScript by building a small project step by step.">
-      <span>🌐</span>
-      <b>Build a website</b>
-      <small>HTML + CSS + JS</small>
-    </button>
+      <div class="hero">
 
-    <button class="tool" data-prompt="Help me debug this code. Explain the error and give me the corrected version.">
-      <span>🐞</span>
-      <b>Debug code</b>
-      <small>Find the problem</small>
-    </button>
+        <div class="pill">
+          🦊 Hey, I'm Knox
+        </div>
 
-    <button class="tool" data-prompt="Explain this programming concept in beginner-friendly language with an example.">
-      <span>💡</span>
-      <b>Learn coding</b>
-      <small>Concepts made simple</small>
-    </button>
+        <h1>
+          What are we<br>
+          <span>tackling today?</span>
+        </h1>
 
-    <button class="tool" data-prompt="Give me a clean project structure for a modern web app.">
-      <span>🗂️</span>
-      <b>Project structure</b>
-      <small>Organize your files</small>
-    </button>
-  </div>
-</section>
+        <p>
+          Pick a topic below to get started — or type your own question
+          in the box.
+        </p>
 
-<section class="view" id="settingsView">
-  <div class="page">
-    <h2>Settings</h2>
-    <p>Customize your KNOX AI experience.</p>
-  </div>
+      </div>
 
-  <div class="settings">
 
-    <label>
-      Your display name
-      <input id="name" maxlength="30" placeholder="Knox">
-    </label>
+      <div class="cards">
 
-    <label>
-      AI backend
-      <input
-        id="endpoint"
-        value="https://knox-ai-backend-production.up.railway.app/api/chat"
-        placeholder="https://your-backend.example/api/chat"
+        <button class="card"
+          data-prompt="Solve a quadratic equation step by step. Explain the method clearly.">
+
+          <span class="icon orange">📐</span>
+
+          <span>
+            <b>QUADRATIC</b>
+            <small>Step-by-step algebra</small>
+          </span>
+
+          <i class="arrow">›</i>
+
+        </button>
+
+
+        <button class="card"
+          data-prompt="Explain photosynthesis simply, including the word equation and key stages.">
+
+          <span class="icon green">🌿</span>
+
+          <span>
+            <b>PHOTOSYNTHESIS</b>
+            <small>Biology explained</small>
+          </span>
+
+          <i class="arrow">›</i>
+
+        </button>
+
+
+        <button class="card"
+          data-prompt="Give me a clear school-level breakdown of World War 1: causes, major events and effects.">
+
+          <span class="icon blue">🌍</span>
+
+          <span>
+            <b>WORLD WAR 1</b>
+            <small>History breakdown</small>
+          </span>
+
+          <i class="arrow">›</i>
+
+        </button>
+
+
+        <button class="card"
+          data-prompt="Help me structure a strong school essay. Show introduction, body paragraphs and conclusion.">
+
+          <span class="icon purple">✍️</span>
+
+          <span>
+            <b>THESIS</b>
+            <small>Essay writing help</small>
+          </span>
+
+          <i class="arrow">›</i>
+
+        </button>
+
+
+        <button class="card"
+          data-prompt="Teach me HTML, CSS and JavaScript by building a small project.">
+
+          <span class="icon indigo">💻</span>
+
+          <span>
+            <b>CODING</b>
+            <small>Build and learn</small>
+          </span>
+
+          <i class="arrow">›</i>
+
+        </button>
+
+
+        <button class="card"
+          data-prompt="Make a short study plan for today's revision.">
+
+          <span class="icon gold">🎯</span>
+
+          <span>
+            <b>STUDY PLAN</b>
+            <small>Focus and revise</small>
+          </span>
+
+          <i class="arrow">›</i>
+
+        </button>
+
+      </div>
+
+
+      <div class="trust">
+
+        <span class="trust-icon">⚡</span>
+
+        <div>
+          <b>KNOX AI is connected</b>
+          <small id="homeStatus">
+            Powered through the KNOX AI backend.
+          </small>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- CHAT -->
+    <section class="view" id="chatView">
+
+      <div class="chathead">
+
+        <button class="back" id="back">
+          ←
+        </button>
+
+        <div>
+          <b>KNOX AI</b>
+
+          <small id="chatStatus">
+            Ready
+          </small>
+        </div>
+
+        <button class="more" id="more">
+          ⋯
+        </button>
+
+      </div>
+
+
+      <div class="messages" id="messages"></div>
+
+    </section>
+
+
+    <!-- HISTORY -->
+    <section class="view" id="historyView">
+
+      <div class="page">
+
+        <h2>Chat history</h2>
+
+        <p>
+          Your conversations are stored locally on this device.
+        </p>
+
+      </div>
+
+      <div class="history" id="history"></div>
+
+    </section>
+
+
+    <!-- STUDY -->
+    <section class="view" id="studyView">
+
+      <div class="page">
+
+        <h2>Study tools</h2>
+
+        <p>
+          Quick starters for learning and revision.
+        </p>
+
+      </div>
+
+
+      <div class="tools">
+
+        <button class="tool"
+          data-prompt="Explain a difficult topic to me like I'm learning it for the first time.">
+
+          <span>🧠</span>
+          <b>Explain a topic</b>
+          <small>Simple, clear teaching</small>
+
+        </button>
+
+
+        <button class="tool"
+          data-prompt="Create five practice questions and put the answers after the questions.">
+
+          <span>📝</span>
+          <b>Practice questions</b>
+          <small>Test your knowledge</small>
+
+        </button>
+
+
+        <button class="tool"
+          data-prompt="Turn this topic into short revision notes with headings and bullet points.">
+
+          <span>📚</span>
+          <b>Revision notes</b>
+          <small>Fast cramming format</small>
+
+        </button>
+
+
+        <button class="tool"
+          data-prompt="Help me calculate this maths problem and show the working.">
+
+          <span>🧮</span>
+          <b>Math helper</b>
+          <small>Show the working</small>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- WRITING -->
+    <section class="view" id="writingView">
+
+      <div class="page">
+
+        <h2>Writing studio</h2>
+
+        <p>
+          Plan, rewrite and improve your writing.
+        </p>
+
+      </div>
+
+
+      <div class="tools">
+
+        <button class="tool"
+          data-prompt="Help me write a clear school essay on a topic I will provide.">
+
+          <span>✍️</span>
+          <b>Essay helper</b>
+          <small>Structure and ideas</small>
+
+        </button>
+
+
+        <button class="tool"
+          data-prompt="Rewrite my text so it sounds natural, clear and confident without changing the meaning.">
+
+          <span>✨</span>
+          <b>Rewrite</b>
+          <small>Clearer wording</small>
+
+        </button>
+
+
+        <button class="tool"
+          data-prompt="Summarize the text I provide into concise bullet points.">
+
+          <span>📌</span>
+          <b>Summarize</b>
+          <small>Key points only</small>
+
+        </button>
+
+
+        <button class="tool"
+          data-prompt="Check my grammar and explain the important corrections.">
+
+          <span>🔎</span>
+          <b>Grammar check</b>
+          <small>Learn from corrections</small>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- CODING -->
+    <section class="view" id="codingView">
+
+      <div class="page">
+
+        <h2>Coding lab</h2>
+
+        <p>
+          Learn web development and debug your projects.
+        </p>
+
+      </div>
+
+
+      <div class="tools">
+
+        <button class="tool"
+          data-prompt="Teach me HTML, CSS and JavaScript by building a small project step by step.">
+
+          <span>🌐</span>
+          <b>Build a website</b>
+          <small>HTML + CSS + JS</small>
+
+        </button>
+
+
+        <button class="tool"
+          data-prompt="Help me debug this code. Explain the error and give me the corrected version.">
+
+          <span>🐞</span>
+          <b>Debug code</b>
+          <small>Find the problem</small>
+
+        </button>
+
+
+        <button class="tool"
+          data-prompt="Explain this programming concept in beginner-friendly language with an example.">
+
+          <span>💡</span>
+          <b>Learn coding</b>
+          <small>Concepts made simple</small>
+
+        </button>
+
+
+        <button class="tool"
+          data-prompt="Give me a clean project structure for a modern web app.">
+
+          <span>🗂️</span>
+          <b>Project structure</b>
+          <small>Organize your files</small>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- SETTINGS -->
+    <section class="view" id="settingsView">
+
+      <div class="page">
+
+        <h2>Settings</h2>
+
+        <p>
+          Customize your KNOX AI experience.
+        </p>
+
+      </div>
+
+
+      <div class="settings">
+
+        <label>
+          Your display name
+
+          <input
+            id="name"
+            maxlength="30"
+            placeholder="Knox"
+          >
+
+        </label>
+
+
+        <label>
+          AI backend
+
+          <input
+            id="endpoint"
+            placeholder="https://your-backend.example/api/chat"
+          >
+
+        </label>
+
+
+        <small>
+          The OpenAI API key should remain on your Railway backend.
+          Never put your secret API key directly inside this website.
+        </small>
+
+
+        <button class="save" id="save">
+          Save settings
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- COMPOSER -->
+  <div class="composer-wrap">
+
+    <div class="composer">
+
+      <button
+        class="attach"
+        id="attach"
+        title="Attach image"
       >
-    </label>
+        ＋
+      </button>
 
-    <small>
-      Your KNOX AI backend is already configured. Your OpenAI API key stays
-      on the Railway server and is never placed inside this website.
-    </small>
+      <input
+        type="file"
+        id="file"
+        accept="image/*"
+        hidden
+      >
 
-    <button class="save" id="save">
-      Save settings
-    </button>
+      <textarea
+        id="input"
+        rows="1"
+        placeholder="Ask Knox anything..."
+      ></textarea>
+
+      <button
+        class="send"
+        id="send"
+        title="Send"
+      >
+        ➤
+      </button>
+
+    </div>
+
+
+    <div class="note">
+      KNOX AI can make mistakes — check important answers.
+    </div>
 
   </div>
-</section>
 
-</main>
 
-<div class="composer-wrap">
-  <div class="composer">
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
 
-    <button class="attach" id="attach">＋</button>
 
-    <input type="file" id="file" accept="image/*" hidden>
+  <!-- PROFILE MODAL -->
+  <div class="modal" id="profileModal">
 
-    <textarea
-      id="input"
-      rows="1"
-      placeholder="Ask Knox anything..."
-    ></textarea>
+    <div class="box">
 
-    <button class="send" id="send">➤</button>
+      <button
+        class="box-x"
+        data-close="profileModal"
+      >
+        ×
+      </button>
+
+      <div class="big-fox">🦊</div>
+
+      <h3>KNOX profile</h3>
+
+      <p>
+        Local profile — no account required.
+      </p>
+
+      <button class="save" id="editProfile">
+        Edit profile
+      </button>
+
+    </div>
+
   </div>
 
-  <div class="note">
-    KNOX AI can make mistakes — check important answers.
+
+  <!-- IMAGE MODAL -->
+  <div class="modal" id="imageModal">
+
+    <div class="box">
+
+      <button
+        class="box-x"
+        data-close="imageModal"
+      >
+        ×
+      </button>
+
+      <h3>Attached image</h3>
+
+      <img
+        id="preview"
+        alt="Selected image"
+      >
+
+      <button
+        class="save"
+        id="askImage"
+      >
+        Ask Knox about this image
+      </button>
+
+    </div>
+
   </div>
-</div>
 
-<div class="toast" id="toast"></div>
 
-<div class="modal" id="profileModal">
-  <div class="box">
-    <button class="box-x" data-close="profileModal">×</button>
-    <div style="font-size:54px">🦊</div>
-    <h3>KNOX profile</h3>
-    <p>Local profile — no account required.</p>
-    <button class="save" id="editProfile">Edit profile</button>
-  </div>
-</div>
+  <!-- IMPORTANT: ONLY ONE SCRIPT FILE -->
+  <script src="script.js"></script>
 
-<div class="modal" id="imageModal">
-  <div class="box">
-    <button class="box-x" data-close="imageModal">×</button>
-    <h3>Attached image</h3>
-    <img id="preview" alt="Selected image">
-    <button class="save" id="askImage">
-      Ask Knox about this image
-    </button>
-  </div>
-</div>
-
-<script>
-"use strict";
-
-/* =========================================================
-   KNOX AI CONFIGURATION
-========================================================= */
-
-const DEFAULT_ENDPOINT =<script>
-"use strict";
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
-const drawer = document.getElementById("drawer");
-const shade = document.getElementById("shade");
-const messagesBox = document.getElementById("messages");
-const input = document.getElementById("input");
-const send = document.getElementById("send");
-const toast = document.getElementById("toast");
-const chatStatus = document.getElementById("chatStatus");
-const endpointInput = document.getElementById("endpoint");
-const nameInput = document.getElementById("name");
-
-const DEFAULT_ENDPOINT =
-  "https://knox-ai-backend-production.up.railway.app/api/chat";
-
-const STORAGE = {
-  name: "knox_ai_name",
-  endpoint: "knox_ai_endpoint",
-  theme: "knox_ai_theme",
-  history: "knox_ai_history"
-};
-
-let endpoint =
-  localStorage.getItem(STORAGE.endpoint) || DEFAULT_ENDPOINT;
-
-let currentConversation = [];
-let attachedImage = null;
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function showToast(message) {
-  toast.textContent = message;
-  toast.classList.add("show");
-
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2500);
-}
-
-
-/* =========================================================
-   DRAWER
-========================================================= */
-
-document.getElementById("menu").onclick = () => {
-  drawer.classList.add("open");
-  shade.classList.add("show");
-};
-
-document.getElementById("close").onclick = closeDrawer;
-shade.onclick = closeDrawer;
-
-function closeDrawer() {
-  drawer.classList.remove("open");
-  shade.classList.remove("show");
-}
-
-
-/* =========================================================
-   VIEWS
-========================================================= */
-
-function showView(name) {
-
-  document.querySelectorAll(".view").forEach(view => {
-    view.classList.remove("active");
-  });
-
-  const view = document.getElementById(name + "View");
-
-  if (view) {
-    view.classList.add("active");
-  }
-
-  closeDrawer();
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-
-  if (name === "history") {
-    renderHistory();
-  }
-}
-
-document.querySelectorAll("[data-view]").forEach(button => {
-
-  button.addEventListener("click", () => {
-    showView(button.dataset.view);
-  });
-
-});
-
-document.getElementById("home").onclick = () => {
-  showView("home");
-};
-
-
-/* =========================================================
-   THEME
-========================================================= */
-
-function applyTheme() {
-
-  const theme =
-    localStorage.getItem(STORAGE.theme);
-
-  if (theme === "dark") {
-    document.body.classList.add("dark");
-    document.getElementById("theme").textContent = "☀";
-  } else {
-    document.body.classList.remove("dark");
-    document.getElementById("theme").textContent = "☾";
-  }
-}
-
-document.getElementById("theme").onclick = () => {
-
-  const dark =
-    !document.body.classList.contains("dark");
-
-  document.body.classList.toggle("dark");
-
-  localStorage.setItem(
-    STORAGE.theme,
-    dark ? "dark" : "light"
-  );
-
-  document.getElementById("theme").textContent =
-    dark ? "☀" : "☾";
-};
-
-applyTheme();
-
-
-/* =========================================================
-   PROFILE
-========================================================= */
-
-function loadProfile() {
-
-  const name =
-    localStorage.getItem(STORAGE.name) || "Knox";
-
-  document.getElementById("pname").textContent = name;
-
-  document.getElementById("avatar").textContent =
-    name.charAt(0).toUpperCase();
-
-  if (nameInput) {
-    nameInput.value = name;
-  }
-}
-
-loadProfile();
-
-document.getElementById("profile").onclick = () => {
-  document.getElementById("profileModal")
-    .classList.add("show");
-};
-
-document.getElementById("editProfile").onclick = () => {
-
-  document.getElementById("profileModal")
-    .classList.remove("show");
-
-  showView("settings");
-
-  nameInput.focus();
-};
-
-
-/* =========================================================
-   MODALS
-========================================================= */
-
-document.querySelectorAll("[data-close]").forEach(button => {
-
-  button.onclick = () => {
-
-    const id = button.dataset.close;
-
-    document.getElementById(id)
-      .classList.remove("show");
-  };
-
-});
-
-document.querySelectorAll(".modal").forEach(modal => {
-
-  modal.addEventListener("click", event => {
-
-    if (event.target === modal) {
-      modal.classList.remove("show");
-    }
-
-  });
-
-});
-
-
-/* =========================================================
-   SETTINGS
-========================================================= */
-
-endpointInput.value = endpoint;
-
-document.getElementById("save").onclick = () => {
-
-  const name =
-    nameInput.value.trim() || "Knox";
-
-  let newEndpoint =
-    endpointInput.value.trim();
-
-  if (!newEndpoint) {
-    newEndpoint = DEFAULT_ENDPOINT;
-  }
-
-  localStorage.setItem(
-    STORAGE.name,
-    name
-  );
-
-  localStorage.setItem(
-    STORAGE.endpoint,
-    newEndpoint
-  );
-
-  endpoint = newEndpoint;
-
-  loadProfile();
-
-  showToast("Settings saved ✓");
-
-  checkBackend();
-};
-
-
-/* =========================================================
-   BACKEND HEALTH CHECK
-========================================================= */
-
-async function checkBackend() {
-
-  chatStatus.textContent =
-    "Checking KNOX AI backend...";
-
-  try {
-
-    const base =
-      endpoint.replace(/\/api\/chat\/?$/, "");
-
-    const response =
-      await fetch(base + "/health", {
-        method: "GET"
-      });
-
-    if (!response.ok) {
-      throw new Error("Backend is not responding.");
-    }
-
-    const data =
-      await response.json();
-
-    if (!data.success) {
-      throw new Error("Backend health check failed.");
-    }
-
-    chatStatus.textContent =
-      "KNOX AI is online • Real AI backend";
-
-    chatStatus.classList.add(
-      "status",
-      "online"
-    );
-
-    return true;
-
-  } catch (error) {
-
-    console.error(
-      "KNOX AI backend error:",
-      error
-    );
-
-    chatStatus.textContent =
-      "Backend connection unavailable";
-
-    chatStatus.classList.remove("online");
-
-    return false;
-  }
-}
-
-
-/* =========================================================
-   OPEN CHAT
-========================================================= */
-
-function openChat() {
-
-  showView("chat");
-
-  if (!messagesBox.children.length) {
-
-    addMessage(
-      "assistant",
-      "Hey! 🦊 I'm KNOX AI. Ask me anything and I'll help you."
-    );
-  }
-
-  checkBackend();
-
-  setTimeout(() => {
-    input.focus();
-  }, 200);
-}
-
-
-/* =========================================================
-   ADD MESSAGE
-========================================================= */
-
-function addMessage(role, text) {
-
-  const row =
-    document.createElement("div");
-
-  row.className =
-    "msg " +
-    (role === "user" ? "user" : "assistant");
-
-  const icon =
-    document.createElement("div");
-
-  icon.className = "msgicon";
-
-  icon.textContent =
-    role === "user" ? "K" : "🦊";
-
-  const bubble =
-    document.createElement("div");
-
-  bubble.className = "bubble";
-
-  bubble.textContent = text;
-
-  row.appendChild(icon);
-  row.appendChild(bubble);
-
-  messagesBox.appendChild(row);
-
-  window.scrollTo({
-    top: document.body.scrollHeight,
-    behavior: "smooth"
-  });
-
-  return row;
-}
-
-
-/* =========================================================
-   TYPING INDICATOR
-========================================================= */
-
-function addTyping() {
-
-  const row =
-    document.createElement("div");
-
-  row.className = "msg assistant";
-  row.id = "typing";
-
-  const icon =
-    document.createElement("div");
-
-  icon.className = "msgicon";
-  icon.textContent = "🦊";
-
-  const bubble =
-    document.createElement("div");
-
-  bubble.className =
-    "bubble typing";
-
-  bubble.innerHTML =
-    "<i></i><i></i><i></i>";
-
-  row.appendChild(icon);
-  row.appendChild(bubble);
-
-  messagesBox.appendChild(row);
-}
-
-function removeTyping() {
-
-  const typing =
-    document.getElementById("typing");
-
-  if (typing) {
-    typing.remove();
-  }
-}
-
-
-/* =========================================================
-   REAL AI REQUEST
-========================================================= */
-
-async function sendMessage(text) {
-
-  text = String(text || "").trim();
-
-  if (!text) {
-    return;
-  }
-
-  openChat();
-
-  addMessage(
-    "user",
-    text
-  );
-
-  currentConversation.push({
-    role: "user",
-    content: text
-  });
-
-  input.value = "";
-  input.style.height = "auto";
-
-  send.disabled = true;
-
-  addTyping();
-
-  chatStatus.textContent =
-    "KNOX AI is thinking...";
-
-  try {
-
-    const response =
-      await fetch(endpoint, {
-
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-
-          message: text,
-
-          messages:
-            currentConversation.slice(-20)
-
-        })
-      });
-
-    const data =
-      await response.json()
-        .catch(() => ({}));
-
-    removeTyping();
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error ||
-        "KNOX AI backend returned an error."
-      );
-    }
-
-    if (!data.success || !data.reply) {
-
-      throw new Error(
-        data.error ||
-        "KNOX AI returned no response."
-      );
-    }
-
-    const reply =
-      String(data.reply);
-
-    addMessage(
-      "assistant",
-      reply
-    );
-
-    currentConversation.push({
-      role: "assistant",
-      content: reply
-    });
-
-    saveConversation(
-      text,
-      reply
-    );
-
-    chatStatus.textContent =
-      "KNOX AI is online • Real AI backend";
-
-    chatStatus.classList.add(
-      "status",
-      "online"
-    );
-
-  } catch (error) {
-
-    removeTyping();
-
-    console.error(
-      "KNOX AI ERROR:",
-      error
-    );
-
-    addMessage(
-      "assistant",
-      "⚠️ I couldn't connect to the KNOX AI backend.\n\n" +
-      error.message +
-      "\n\nPlease check the Railway backend and try again."
-    );
-
-    chatStatus.textContent =
-      "Connection error";
-
-  } finally {
-
-    send.disabled = false;
-
-    input.focus();
-  }
-}
-
-
-/* =========================================================
-   SEND BUTTON
-========================================================= */
-
-send.onclick = () => {
-  sendMessage(input.value);
-};
-
-
-/* =========================================================
-   ENTER KEY
-========================================================= */
-
-input.addEventListener("keydown", event => {
-
-  if (
-    event.key === "Enter" &&
-    !event.shiftKey
-  ) {
-
-    event.preventDefault();
-
-    sendMessage(input.value);
-  }
-
-});
-
-
-/* =========================================================
-   TEXTAREA AUTO SIZE
-========================================================= */
-
-input.addEventListener("input", () => {
-
-  input.style.height = "auto";
-
-  input.style.height =
-    Math.min(input.scrollHeight, 120) +
-    "px";
-});
-
-
-/* =========================================================
-   QUICK PROMPTS
-========================================================= */
-
-document.querySelectorAll("[data-prompt]").forEach(button => {
-
-  button.addEventListener("click", () => {
-
-    const prompt =
-      button.dataset.prompt;
-
-    sendMessage(prompt);
-
-  });
-
-});
-
-
-/* =========================================================
-   NEW CHAT
-========================================================= */
-
-document.getElementById("newChat").onclick = () => {
-
-  currentConversation = [];
-
-  messagesBox.innerHTML = "";
-
-  addMessage(
-    "assistant",
-    "New chat started. 🦊 What would you like to work on?"
-  );
-
-  showView("chat");
-
-  input.focus();
-};
-
-
-/* =========================================================
-   BACK BUTTON
-========================================================= */
-
-document.getElementById("back").onclick = () => {
-  showView("home");
-};
-
-
-/* =========================================================
-   CHAT HISTORY
-========================================================= */
-
-function getHistory() {
-
-  try {
-
-    return JSON.parse(
-      localStorage.getItem(
-        STORAGE.history
-      ) || "[]"
-    );
-
-  } catch {
-
-    return [];
-  }
-}
-
-function saveConversation(
-  question,
-  answer
-) {
-
-  const history =
-    getHistory();
-
-  history.unshift({
-
-    id: Date.now(),
-
-    question,
-
-    answer,
-
-    date:
-      new Date().toLocaleString()
-
-  });
-
-  localStorage.setItem(
-    STORAGE.history,
-    JSON.stringify(
-      history.slice(0, 50)
-    )
-  );
-}
-
-function renderHistory() {
-
-  const box =
-    document.getElementById("history");
-
-  const history =
-    getHistory();
-
-  box.innerHTML = "";
-
-  if (!history.length) {
-
-    box.innerHTML =
-      '<div class="empty">No conversations yet.</div>';
-
-    return;
-  }
-
-  history.forEach(item => {
-
-    const row =
-      document.createElement("div");
-
-    row.className =
-      "history-item";
-
-    const content =
-      document.createElement("div");
-
-    const title =
-      document.createElement("b");
-
-    title.textContent =
-      item.question;
-
-    const date =
-      document.createElement("small");
-
-    date.textContent =
-      item.date;
-
-    content.appendChild(title);
-    content.appendChild(date);
-
-    const open =
-      document.createElement("button");
-
-    open.textContent =
-      "Open";
-
-    open.onclick = () => {
-
-      currentConversation = [
-        {
-          role: "user",
-          content: item.question
-        },
-        {
-          role: "assistant",
-          content: item.answer
-        }
-      ];
-
-      messagesBox.innerHTML = "";
-
-      addMessage(
-        "user",
-        item.question
-      );
-
-      addMessage(
-        "assistant",
-        item.answer
-      );
-
-      showView("chat");
-    };
-
-    row.appendChild(content);
-    row.appendChild(open);
-
-    box.appendChild(row);
-
-  });
-}
-
-
-/* =========================================================
-   CLEAR LOCAL DATA
-========================================================= */
-
-document.getElementById("clear").onclick = () => {
-
-  const confirmed =
-    confirm(
-      "Clear KNOX AI local profile, settings and chat history?"
-    );
-
-  if (!confirmed) {
-    return;
-  }
-
-  localStorage.removeItem(STORAGE.name);
-  localStorage.removeItem(STORAGE.endpoint);
-  localStorage.removeItem(STORAGE.history);
-
-  endpoint =
-    DEFAULT_ENDPOINT;
-
-  endpointInput.value =
-    DEFAULT_ENDPOINT;
-
-  loadProfile();
-
-  renderHistory();
-
-  showToast(
-    "Local data cleared ✓"
-  );
-};
-
-
-/* =========================================================
-   IMAGE ATTACHMENT
-========================================================= */
-
-document.getElementById("attach").onclick = () => {
-  document.getElementById("file").click();
-};
-
-document.getElementById("file").addEventListener(
-  "change",
-  event => {
-
-    const file =
-      event.target.files[0];
-
-    if (!file) {
-      return;
-    }
-
-    if (!file.type.startsWith("image/")) {
-
-      showToast(
-        "Please select an image."
-      );
-
-      return;
-    }
-
-    const reader =
-      new FileReader();
-
-    reader.onload = () => {
-
-      attachedImage =
-        reader.result;
-
-      document.getElementById(
-        "preview"
-      ).src = attachedImage;
-
-      document.getElementById(
-        "imageModal"
-      ).classList.add("show");
-    };
-
-    reader.readAsDataURL(file);
-  }
-);
-
-
-/* =========================================================
-   IMAGE QUESTION
-========================================================= */
-
-document.getElementById("askImage").onclick = () => {
-
-  document.getElementById(
-    "imageModal"
-  ).classList.remove("show");
-
-  if (!attachedImage) {
-    return;
-  }
-
-  sendMessage(
-    "I attached an image. Please help me understand what is shown in it."
-  );
-
-  attachedImage = null;
-};
-
-
-/* =========================================================
-   MORE BUTTON
-========================================================= */
-
-document.getElementById("more").onclick = () => {
-
-  showToast(
-    "Use the menu for New Chat and Chat History."
-  );
-};
-
-
-/* =========================================================
-   STARTUP
-========================================================= */
-
-loadProfile();
-
-endpointInput.value =
-  endpoint;
-
-checkBackend();
-
-</script>
-  "https://knox-ai-backend-production.up.railway.app/api/chat";
-
-const STORAGE = {
-  name: "knox_ai_name",
-  endpoint: "knox_ai_endpoint",
-  theme: "knox_ai_theme",
-  history: "knox_ai_history"
-};
-
-let endpoint =
-  localStorage.getItem(STORAGE.endpoint) || DEFAULT_ENDPOINT;
-
-let messages = [];
-let currentConversation = [];
-let attachedImage = null;
-
-
+</body>
+  </html>
