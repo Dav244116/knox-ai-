@@ -1,1000 +1,1595 @@
 "use strict";
 
 /* =========================================================
-   KNOX AI — FRONTEND ENGINE
+   KNOX AI
+   Main JavaScript
 ========================================================= */
 
-const CONFIG = {
-  maxMessages: 20,
-  defaultName: "Knox"
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+const DEFAULT_ENDPOINT =
+  "https://knox-ai-backend-production.up.railway.app/api/chat";
+
+
+const STORAGE = {
+  name: "knox_ai_name",
+  endpoint: "knox_ai_endpoint",
+  theme: "knox_ai_theme",
+  history: "knox_ai_history"
 };
 
-const $ = id => document.getElementById(id);
-
-const body = document.body;
-const drawer = $("drawer");
-const shade = $("shade");
-
-const menuBtn = $("menu");
-const closeBtn = $("close");
-const newChatBtn = $("newChat");
-
-const themeBtn = $("theme");
-const profileBtn = $("profile");
-const profileModal = $("profileModal");
-
-const messages = $("messages");
-const historyBox = $("history");
-
-const input = $("input");
-const sendBtn = $("send");
-
-const attachBtn = $("attach");
-const fileInput = $("file");
-
-const imageModal = $("imageModal");
-const preview = $("preview");
-
-const toast = $("toast");
-
-const nameInput = $("name");
-const endpointInput = $("endpoint");
-const saveBtn = $("save");
-
-const leftCounter = $("left");
-const profileName = $("pname");
-const avatar = $("avatar");
-
-const chatStatus = $("chatStatus");
-
-let conversations =
-  JSON.parse(localStorage.getItem("knox_history") || "[]");
-
-let messageCount =
-  Number(localStorage.getItem("knox_message_count") || "0");
-
-let currentConversationId = null;
-let selectedImage = null;
-let toastTimer = null;
 
 /* =========================================================
-   INIT
+   ELEMENTS
 ========================================================= */
 
-function init() {
-  checkDailyReset();
-  loadSettings();
-  updateProfile();
+const drawer =
+  document.getElementById("drawer");
+
+const shade =
+  document.getElementById("shade");
+
+const menu =
+  document.getElementById("menu");
+
+const closeDrawer =
+  document.getElementById("close");
+
+const newChat =
+  document.getElementById("newChat");
+
+const homeButton =
+  document.getElementById("homeButton");
+
+const theme =
+  document.getElementById("theme");
+
+const profile =
+  document.getElementById("profile");
+
+const avatar =
+  document.getElementById("avatar");
+
+const pname =
+  document.getElementById("pname");
+
+const left =
+  document.getElementById("left");
+
+const messagesBox =
+  document.getElementById("messages");
+
+const input =
+  document.getElementById("input");
+
+const send =
+  document.getElementById("send");
+
+const attach =
+  document.getElementById("attach");
+
+const fileInput =
+  document.getElementById("file");
+
+const toast =
+  document.getElementById("toast");
+
+const chatStatus =
+  document.getElementById("chatStatus");
+
+const homeStatus =
+  document.getElementById("homeStatus");
+
+const endpointInput =
+  document.getElementById("endpoint");
+
+const nameInput =
+  document.getElementById("name");
+
+const saveButton =
+  document.getElementById("save");
+
+const historyBox =
+  document.getElementById("history");
+
+const back =
+  document.getElementById("back");
+
+const more =
+  document.getElementById("more");
+
+const clearButton =
+  document.getElementById("clear");
+
+const editProfile =
+  document.getElementById("editProfile");
+
+const preview =
+  document.getElementById("preview");
+
+const askImage =
+  document.getElementById("askImage");
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let endpoint =
+  localStorage.getItem(STORAGE.endpoint) ||
+  DEFAULT_ENDPOINT;
+
+let userName =
+  localStorage.getItem(STORAGE.name) ||
+  "Knox";
+
+let messages = [];
+
+let currentConversation = [];
+
+let attachedImage = null;
+
+let isSending = false;
+
+
+/* =========================================================
+   STARTUP
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
   loadTheme();
-  renderHistory();
-  updateCounter();
-  updateChatStatus();
-}
 
-init();
+  loadProfile();
 
-/* =========================================================
-   TOAST
-========================================================= */
+  endpointInput.value = endpoint;
 
-function showToast(message) {
-  clearTimeout(toastTimer);
+  setupNavigation();
 
-  toast.textContent = message;
-  toast.classList.add("show");
+  setupPromptButtons();
 
-  toastTimer = setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2500);
-}
+  setupComposer();
 
-/* =========================================================
-   DRAWER
-========================================================= */
+  setupDrawer();
 
-function openDrawer() {
-  drawer?.classList.add("open");
-  shade?.classList.add("show");
-}
+  setupModals();
 
-function closeDrawer() {
-  drawer?.classList.remove("open");
-  shade?.classList.remove("show");
-}
+  setupSettings();
 
-menuBtn?.addEventListener("click", openDrawer);
-closeBtn?.addEventListener("click", closeDrawer);
-shade?.addEventListener("click", closeDrawer);
+  setupHistory();
 
-/* =========================================================
-   VIEWS
-========================================================= */
+  setupTheme();
 
-function showView(view) {
-  document.querySelectorAll(".view").forEach(section => {
-    section.classList.remove("active");
-  });
+  updateUsage();
 
-  const target = $(view + "View");
+  updateConnectionStatus();
 
-  if (target) {
-    target.classList.add("active");
-  }
-
-  closeDrawer();
-
-  if (view === "history") {
-    renderHistory();
-  }
-}
-
-document.querySelectorAll("[data-view]").forEach(button => {
-  button.addEventListener("click", () => {
-    showView(button.dataset.view);
-  });
 });
 
-$("home")?.addEventListener("click", () => {
-  showView("home");
-});
-
-/* =========================================================
-   NEW CHAT
-========================================================= */
-
-function startNewChat() {
-  currentConversationId = null;
-
-  messages.innerHTML = "";
-
-  showView("chat");
-
-  addAssistantMessage(
-    `Hey ${getName()} 👋\n\n` +
-    "I'm KNOX AI. What do you want to work on?"
-  );
-}
-
-newChatBtn?.addEventListener("click", startNewChat);
-
-/* =========================================================
-   MESSAGES
-========================================================= */
-
-function addUserMessage(text) {
-  const wrapper = document.createElement("div");
-  wrapper.className = "msg user";
-
-  const icon = document.createElement("div");
-  icon.className = "msgicon";
-  icon.textContent = getInitial();
-
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
-  bubble.textContent = text;
-
-  wrapper.append(icon, bubble);
-  messages.appendChild(wrapper);
-
-  scrollChat();
-}
-
-function addAssistantMessage(text) {
-  const wrapper = document.createElement("div");
-  wrapper.className = "msg";
-
-  const icon = document.createElement("div");
-  icon.className = "msgicon";
-  icon.textContent = "🦊";
-
-  const content = document.createElement("div");
-
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
-  bubble.textContent = text;
-
-  const actions = document.createElement("div");
-  actions.className = "msg-actions";
-
-  const copy = document.createElement("button");
-  copy.type = "button";
-  copy.textContent = "Copy";
-
-  copy.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-      showToast("Copied");
-    } catch {
-      showToast("Copy failed");
-    }
-  });
-
-  actions.appendChild(copy);
-  content.append(bubble, actions);
-  wrapper.append(icon, content);
-
-  messages.appendChild(wrapper);
-
-  scrollChat();
-}
-
-function addTyping() {
-  const wrapper = document.createElement("div");
-  wrapper.className = "msg";
-  wrapper.id = "typing";
-
-  const icon = document.createElement("div");
-  icon.className = "msgicon";
-  icon.textContent = "🦊";
-
-  const bubble = document.createElement("div");
-  bubble.className = "bubble typing";
-
-  ["", "", ""].forEach(() => {
-    const dot = document.createElement("i");
-    bubble.appendChild(dot);
-  });
-
-  wrapper.append(icon, bubble);
-  messages.appendChild(wrapper);
-
-  scrollChat();
-}
-
-function removeTyping() {
-  $("typing")?.remove();
-}
-
-function scrollChat() {
-  setTimeout(() => {
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: "smooth"
-    });
-  }, 50);
-}
-
-/* =========================================================
-   SEND MESSAGE
-========================================================= */
-
-async function sendMessage() {
-  const text = input.value.trim();
-
-  if (!text) return;
-
-  if (messageCount >= CONFIG.maxMessages) {
-    showToast("Daily message limit reached.");
-    return;
-  }
-
-  input.value = "";
-  autoResize();
-
-  showView("chat");
-
-  addUserMessage(text);
-
-  incrementCounter();
-
-  saveConversationMessage("user", text);
-
-  addTyping();
-
-  try {
-    const answer = await getAIResponse(text);
-
-    removeTyping();
-
-    addAssistantMessage(answer);
-    saveConversationMessage("assistant", answer);
-  } catch (error) {
-    removeTyping();
-
-    addAssistantMessage(
-      "I couldn't reach the AI backend.\n\n" +
-      "Open Settings and check your AI endpoint."
-    );
-
-    chatStatus.textContent = "Backend connection failed";
-  }
-}
-
-sendBtn?.addEventListener("click", sendMessage);
-
-/* =========================================================
-   AI BACKEND
-========================================================= */
-
-async function getAIResponse(text) {
-  const endpoint =
-    localStorage.getItem("knox_endpoint") || "";
-
-  if (!endpoint) {
-    return localResponse(text);
-  }
-
-  const controller = new AbortController();
-
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, 30000);
-
-  try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        message: text,
-        prompt: text,
-        name: getName()
-      }),
-      signal: controller.signal
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    const answer =
-      data.reply ||
-      data.response ||
-      data.answer ||
-      data.message ||
-      data.output ||
-      data.text ||
-      data.content ||
-      data.choices?.[0]?.message?.content;
-
-    if (!answer) {
-      throw new Error("Backend returned no answer");
-    }
-
-    chatStatus.textContent = "AI backend connected";
-
-    return String(answer);
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-/* =========================================================
-   DEMO RESPONSE
-========================================================= */
-
-function localResponse(text) {
-  const q = text.toLowerCase();
-
-  if (/^(hi|hello|hey)\b/.test(q)) {
-    return (
-      `Hey ${getName()} 👋\n\n` +
-      "KNOX AI is ready. Connect a real AI endpoint in " +
-      "Settings when you want full AI responses."
-    );
-  }
-
-  if (q.includes("who are you")) {
-    return (
-      "I'm KNOX AI 🦊 — your personal AI assistant interface.\n\n" +
-      "The frontend is running in Demo Mode."
-    );
-  }
-
-  if (q.includes("photosynthesis")) {
-    return (
-      "Photosynthesis is the process plants use to make " +
-      "glucose using light energy.\n\n" +
-      "Carbon dioxide + water → glucose + oxygen.\n\n" +
-      "It mainly takes place in chloroplasts."
-    );
-  }
-
-  if (q.includes("html")) {
-    return (
-      "HTML provides the structure of a webpage.\n\n" +
-      "CSS controls its appearance, while JavaScript " +
-      "adds behaviour and interactivity."
-    );
-  }
-
-  if (q.includes("css")) {
-    return (
-      "CSS controls the appearance of webpages, including " +
-      "layout, colours, fonts, spacing and responsive design."
-    );
-  }
-
-  if (q.includes("javascript")) {
-    return (
-      "JavaScript makes webpages interactive.\n\n" +
-      "KNOX AI uses JavaScript for chat, navigation, " +
-      "history, settings and backend communication."
-    );
-  }
-
-  if (q.includes("quadratic")) {
-    return (
-      "For ax² + bx + c = 0:\n\n" +
-      "x = (-b ± √(b² - 4ac)) / 2a\n\n" +
-      "Send the actual equation when you want to solve one."
-    );
-  }
-
-  if (q.includes("study")) {
-    return (
-      "A simple study session:\n\n" +
-      "1. Review your notes.\n" +
-      "2. Study the hardest topic.\n" +
-      "3. Answer practice questions.\n" +
-      "4. Check your mistakes.\n" +
-      "5. Summarize what you learned."
-    );
-  }
-
-  return (
-    `I received your message:\n\n“${text}”\n\n` +
-    "KNOX AI is currently in Demo Mode. " +
-    "Connect an AI backend in Settings for real AI responses."
-  );
-}
-
-/* =========================================================
-   QUICK PROMPTS
-========================================================= */
-
-document.querySelectorAll("[data-prompt]").forEach(button => {
-  button.addEventListener("click", () => {
-    input.value = button.dataset.prompt;
-    sendMessage();
-  });
-});
-
-/* =========================================================
-   TEXT INPUT
-========================================================= */
-
-input?.addEventListener("keydown", event => {
-  if (event.key === "Enter" && !event.shiftKey) {
-    event.preventDefault();
-    sendMessage();
-  }
-});
-
-input?.addEventListener("input", autoResize);
-
-function autoResize() {
-  input.style.height = "auto";
-  input.style.height =
-    Math.min(input.scrollHeight, 120) + "px";
-}
-
-/* =========================================================
-   COUNTER
-========================================================= */
-
-function incrementCounter() {
-  messageCount++;
-
-  localStorage.setItem(
-    "knox_message_count",
-    String(messageCount)
-  );
-
-  updateCounter();
-}
-
-function updateCounter() {
-  const remaining =
-    Math.max(CONFIG.maxMessages - messageCount, 0);
-
-  if (leftCounter) {
-    leftCounter.textContent = remaining;
-  }
-
-  if (sendBtn) {
-    sendBtn.disabled = remaining <= 0;
-  }
-}
-
-/* =========================================================
-   HISTORY
-========================================================= */
-
-function saveConversationMessage(role, text) {
-  if (!currentConversationId) {
-    currentConversationId = Date.now().toString();
-
-    conversations.unshift({
-      id: currentConversationId,
-      title:
-        role === "user"
-          ? text.slice(0, 45)
-          : "New chat",
-      messages: [],
-      created: new Date().toISOString()
-    });
-  }
-
-  const conversation =
-    conversations.find(
-      item => item.id === currentConversationId
-    );
-
-  if (!conversation) return;
-
-  conversation.messages.push({
-    role,
-    text,
-    time: new Date().toISOString()
-  });
-
-  if (role === "user") {
-    conversation.title =
-      text.length > 45
-        ? text.slice(0, 45) + "..."
-        : text;
-  }
-
-  conversation.updated =
-    new Date().toISOString();
-
-  localStorage.setItem(
-    "knox_history",
-    JSON.stringify(conversations)
-  );
-
-  renderHistory();
-}
-
-function renderHistory() {
-  if (!historyBox) return;
-
-  historyBox.innerHTML = "";
-
-  if (!conversations.length) {
-    historyBox.innerHTML =
-      '<div class="empty">No conversations yet.<br><br>' +
-      "Start chatting with KNOX AI.</div>";
-
-    return;
-  }
-
-  conversations.forEach(conversation => {
-    const item = document.createElement("div");
-    item.className = "history-item";
-
-    const info = document.createElement("div");
-
-    const title = document.createElement("b");
-    title.textContent =
-      conversation.title || "New chat";
-
-    const date = document.createElement("small");
-    date.textContent =
-      formatDate(
-        conversation.updated ||
-        conversation.created
-      );
-
-    info.append(title, date);
-
-    const open = document.createElement("button");
-    open.type = "button";
-    open.textContent = "Open";
-
-    open.addEventListener("click", () => {
-      openConversation(conversation.id);
-    });
-
-    const del = document.createElement("button");
-    del.type = "button";
-    del.textContent = "Delete";
-
-    del.addEventListener("click", () => {
-      deleteConversation(conversation.id);
-    });
-
-    item.append(info, open, del);
-
-    historyBox.appendChild(item);
-  });
-}
-
-function openConversation(id) {
-  const conversation =
-    conversations.find(item => item.id === id);
-
-  if (!conversation) return;
-
-  currentConversationId = id;
-  messages.innerHTML = "";
-
-  conversation.messages.forEach(message => {
-    if (message.role === "user") {
-      addUserMessage(message.text);
-    } else {
-      addAssistantMessage(message.text);
-    }
-  });
-
-  showView("chat");
-}
-
-function deleteConversation(id) {
-  conversations =
-    conversations.filter(item => item.id !== id);
-
-  localStorage.setItem(
-    "knox_history",
-    JSON.stringify(conversations)
-  );
-
-  if (currentConversationId === id) {
-    currentConversationId = null;
-    messages.innerHTML = "";
-  }
-
-  renderHistory();
-  showToast("Chat deleted");
-}
-
-function formatDate(value) {
-  if (!value) return "";
-
-  return new Date(value).toLocaleString();
-}
-
-/* =========================================================
-   CLEAR DATA
-========================================================= */
-
-$("clear")?.addEventListener("click", () => {
-  if (!confirm(
-    "Clear KNOX AI local history, settings and profile?"
-  )) {
-    return;
-  }
-
-  [
-    "knox_history",
-    "knox_name",
-    "knox_endpoint",
-    "knox_message_count",
-    "knox_counter_date"
-  ].forEach(key => localStorage.removeItem(key));
-
-  conversations = [];
-  messageCount = 0;
-  currentConversationId = null;
-
-  messages.innerHTML = "";
-
-  nameInput.value = CONFIG.defaultName;
-  endpointInput.value = "";
-
-  updateProfile();
-  updateCounter();
-  renderHistory();
-  updateChatStatus();
-
-  showToast("Local data cleared");
-});
 
 /* =========================================================
    THEME
 ========================================================= */
 
-function loadTheme() {
-  const theme =
-    localStorage.getItem("knox_theme");
+function loadTheme(){
 
-  const dark = theme === "dark";
+  const savedTheme =
+    localStorage.getItem(STORAGE.theme);
 
-  body.classList.toggle("dark", dark);
-
-  if (themeBtn) {
-    themeBtn.textContent =
-      dark ? "☀" : "☾";
+  if(savedTheme === "dark"){
+    document.body.classList.add("dark");
+    theme.textContent = "☀";
+  }else{
+    theme.textContent = "☾";
   }
+
 }
 
-themeBtn?.addEventListener("click", () => {
-  body.classList.toggle("dark");
 
-  const dark =
-    body.classList.contains("dark");
+function setupTheme(){
 
-  localStorage.setItem(
-    "knox_theme",
-    dark ? "dark" : "light"
-  );
+  theme.addEventListener("click", () => {
 
-  themeBtn.textContent =
-    dark ? "☀" : "☾";
-});
+    document.body.classList.toggle("dark");
+
+    const dark =
+      document.body.classList.contains("dark");
+
+    localStorage.setItem(
+      STORAGE.theme,
+      dark ? "dark" : "light"
+    );
+
+    theme.textContent =
+      dark ? "☀" : "☾";
+
+  });
+
+}
+
 
 /* =========================================================
    PROFILE
 ========================================================= */
 
-function getName() {
-  return (
-    localStorage.getItem("knox_name") ||
-    CONFIG.defaultName
+function loadProfile(){
+
+  pname.textContent = userName;
+
+  avatar.textContent =
+    userName.charAt(0).toUpperCase();
+
+  nameInput.value = userName;
+
+}
+
+
+function saveProfile(){
+
+  let name =
+    nameInput.value.trim();
+
+  if(!name){
+    name = "Knox";
+  }
+
+  userName = name;
+
+  localStorage.setItem(
+    STORAGE.name,
+    userName
   );
+
+  loadProfile();
+
+  showToast("Profile saved");
+
 }
 
-function getInitial() {
-  const name = getName().trim();
-
-  return name
-    ? name.charAt(0).toUpperCase()
-    : "K";
-}
-
-function updateProfile() {
-  if (profileName) {
-    profileName.textContent = getName();
-  }
-
-  if (avatar) {
-    avatar.textContent = getInitial();
-  }
-}
-
-profileBtn?.addEventListener("click", () => {
-  profileModal?.classList.add("show");
-});
-
-$("editProfile")?.addEventListener("click", () => {
-  profileModal?.classList.remove("show");
-
-  showView("settings");
-
-  setTimeout(() => {
-    nameInput?.focus();
-  }, 100);
-});
 
 /* =========================================================
-   SETTINGS
+   DRAWER
 ========================================================= */
 
-function loadSettings() {
-  if (nameInput) {
-    nameInput.value =
-      localStorage.getItem("knox_name") ||
-      CONFIG.defaultName;
-  }
+function openDrawer(){
 
-  if (endpointInput) {
-    endpointInput.value =
-      localStorage.getItem("knox_endpoint") ||
-      "";
-  }
+  drawer.classList.add("open");
+
+  shade.classList.add("show");
+
 }
 
-function validEndpoint(value) {
-  if (!value) return true;
 
-  try {
-    const url =
-      new URL(value, window.location.href);
+function closeDrawerFn(){
 
-    return (
-      url.protocol === "http:" ||
-      url.protocol === "https:"
+  drawer.classList.remove("open");
+
+  shade.classList.remove("show");
+
+}
+
+
+function setupDrawer(){
+
+  menu.addEventListener(
+    "click",
+    openDrawer
+  );
+
+  closeDrawer.addEventListener(
+    "click",
+    closeDrawerFn
+  );
+
+  shade.addEventListener(
+    "click",
+    closeDrawerFn
+  );
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showView(name){
+
+  document
+    .querySelectorAll(".view")
+    .forEach(view => {
+
+      view.classList.remove("active");
+
+    });
+
+
+  const target =
+    document.getElementById(
+      name + "View"
     );
-  } catch {
-    return false;
+
+
+  if(target){
+    target.classList.add("active");
   }
+
+
+  closeDrawerFn();
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
 }
 
-saveBtn?.addEventListener("click", () => {
-  const name =
-    nameInput.value.trim() || CONFIG.defaultName;
 
-  const endpoint =
-    endpointInput.value.trim();
+function setupNavigation(){
 
-  if (!validEndpoint(endpoint)) {
-    showToast("Enter a valid HTTP/HTTPS endpoint.");
-    return;
-  }
+  document
+    .querySelectorAll("[data-view]")
+    .forEach(button => {
 
-  localStorage.setItem("knox_name", name);
-  localStorage.setItem("knox_endpoint", endpoint);
+      button.addEventListener(
+        "click",
+        () => {
 
-  updateProfile();
-  updateChatStatus();
+          showView(
+            button.dataset.view
+          );
 
-  showToast("Settings saved");
-});
+        }
+      );
 
-/* =========================================================
-   CHAT STATUS
-========================================================= */
+    });
 
-function updateChatStatus() {
-  if (!chatStatus) return;
 
-  const endpoint =
-    localStorage.getItem("knox_endpoint") || "";
+  homeButton.addEventListener(
+    "click",
+    () => showView("home")
+  );
 
-  chatStatus.textContent =
-    endpoint
-      ? "AI backend connected"
-      : "Demo mode";
+
+  back.addEventListener(
+    "click",
+    () => {
+
+      showView("home");
+
+    }
+  );
+
 }
 
-/* =========================================================
-   BACK / MORE
-========================================================= */
-
-$("back")?.addEventListener("click", () => {
-  showView("home");
-});
-
-$("more")?.addEventListener("click", () => {
-  startNewChat();
-});
 
 /* =========================================================
-   IMAGE ATTACHMENT
+   PROMPT BUTTONS
 ========================================================= */
 
-attachBtn?.addEventListener("click", () => {
-  fileInput?.click();
-});
+function setupPromptButtons(){
 
-fileInput?.addEventListener("change", event => {
-  const file = event.target.files?.[0];
+  document
+    .querySelectorAll("[data-prompt]")
+    .forEach(button => {
 
-  if (!file) return;
+      button.addEventListener(
+        "click",
+        () => {
 
-  if (!file.type.startsWith("image/")) {
-    showToast("Please select an image.");
-    fileInput.value = "";
-    return;
-  }
+          const prompt =
+            button.dataset.prompt;
 
-  selectedImage = file;
+          if(!prompt){
+            return;
+          }
 
-  const reader = new FileReader();
+          openChat();
 
-  reader.onload = event => {
-    preview.src = event.target.result;
-    imageModal?.classList.add("show");
-  };
+          input.value = prompt;
 
-  reader.readAsDataURL(file);
-});
+          autoResize();
 
-$("askImage")?.addEventListener("click", () => {
-  if (!selectedImage) return;
+          input.focus();
 
-  const filename = selectedImage.name;
+        }
+      );
 
-  imageModal?.classList.remove("show");
+    });
+
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+function openChat(){
 
   showView("chat");
 
-  addUserMessage(
-    "I attached an image: " + filename
+  if(messages.length === 0){
+
+    renderWelcome();
+
+  }
+
+}
+
+
+function renderWelcome(){
+
+  messagesBox.innerHTML = "";
+
+  addMessageToUI(
+    "assistant",
+    `Hey ${userName}! 🦊
+
+I'm KNOX AI. Ask me anything and I'll do my best to help you.
+
+You can ask me about school, coding, writing, maths, ideas, or everyday questions.`
   );
 
-  incrementCounter();
+}
 
-  addAssistantMessage(
-    "The image was attached successfully.\n\n" +
-    "Full image understanding requires a vision-capable backend."
+
+function addMessageToUI(
+  role,
+  text,
+  options = {}
+){
+
+  const row =
+    document.createElement("div");
+
+  row.className =
+    "msg " +
+    (role === "user" ? "user" : "");
+
+
+  const icon =
+    document.createElement("div");
+
+  icon.className = "msgicon";
+
+  icon.textContent =
+    role === "user"
+      ? avatar.textContent
+      : "🦊";
+
+
+  const content =
+    document.createElement("div");
+
+
+  const bubble =
+    document.createElement("div");
+
+  bubble.className = "bubble";
+
+  bubble.textContent = text;
+
+
+  content.appendChild(bubble);
+
+
+  if(role === "assistant"){
+
+    const actions =
+      document.createElement("div");
+
+    actions.className =
+      "msg-actions";
+
+
+    const copy =
+      document.createElement("button");
+
+    copy.textContent = "Copy";
+
+    copy.addEventListener(
+      "click",
+      async () => {
+
+        try{
+
+          await navigator.clipboard.writeText(
+            text
+          );
+
+          showToast("Copied");
+
+        }catch{
+
+          showToast(
+            "Copy is unavailable"
+          );
+
+        }
+
+      }
+    );
+
+
+    actions.appendChild(copy);
+
+    content.appendChild(actions);
+
+  }
+
+
+  row.appendChild(icon);
+
+  row.appendChild(content);
+
+  messagesBox.appendChild(row);
+
+  messagesBox.scrollIntoView({
+    behavior:"smooth",
+    block:"end"
+  });
+
+}
+
+
+/* =========================================================
+   TYPING INDICATOR
+========================================================= */
+
+function showTyping(){
+
+  const row =
+    document.createElement("div");
+
+  row.className =
+    "msg typing-message";
+
+
+  const icon =
+    document.createElement("div");
+
+  icon.className = "msgicon";
+
+  icon.textContent = "🦊";
+
+
+  const bubble =
+    document.createElement("div");
+
+  bubble.className =
+    "bubble typing";
+
+
+  bubble.innerHTML =
+    "<i></i><i></i><i></i>";
+
+
+  row.appendChild(icon);
+
+  row.appendChild(bubble);
+
+  messagesBox.appendChild(row);
+
+  messagesBox.scrollIntoView({
+    behavior:"smooth",
+    block:"end"
+  });
+
+
+  return row;
+
+}
+
+
+/* =========================================================
+   COMPOSER
+========================================================= */
+
+function setupComposer(){
+
+  send.addEventListener(
+    "click",
+    sendMessage
   );
 
-  selectedImage = null;
-  fileInput.value = "";
-});
+
+  input.addEventListener(
+    "keydown",
+    event => {
+
+      if(
+        event.key === "Enter" &&
+        !event.shiftKey
+      ){
+
+        event.preventDefault();
+
+        sendMessage();
+
+      }
+
+    }
+  );
+
+
+  input.addEventListener(
+    "input",
+    autoResize
+  );
+
+
+  attach.addEventListener(
+    "click",
+    () => {
+
+      fileInput.click();
+
+    }
+  );
+
+
+  fileInput.addEventListener(
+    "change",
+    handleImage
+  );
+
+
+  newChat.addEventListener(
+    "click",
+    startNewChat
+  );
+
+}
+
+
+/* =========================================================
+   AUTO RESIZE
+========================================================= */
+
+function autoResize(){
+
+  input.style.height = "auto";
+
+  input.style.height =
+    Math.min(
+      input.scrollHeight,
+      120
+    ) + "px";
+
+}
+
+
+/* =========================================================
+   SEND MESSAGE
+========================================================= */
+
+async function sendMessage(){
+
+  if(isSending){
+    return;
+  }
+
+
+  const text =
+    input.value.trim();
+
+
+  if(!text && !attachedImage){
+
+    showToast(
+      "Type a message first"
+    );
+
+    return;
+
+  }
+
+
+  openChat();
+
+
+  const userText =
+    text ||
+    "Please analyze the attached image.";
+
+
+  addMessageToUI(
+    "user",
+    userText
+  );
+
+
+  currentConversation.push({
+    role:"user",
+    content:userText
+  });
+
+
+  input.value = "";
+
+  autoResize();
+
+
+  const imageToSend =
+    attachedImage;
+
+
+  attachedImage = null;
+
+
+  isSending = true;
+
+  send.disabled = true;
+
+  chatStatus.textContent =
+    "KNOX AI is thinking...";
+
+
+  const typing =
+    showTyping();
+
+
+  try{
+
+    const reply =
+      await requestAI(
+        userText,
+        imageToSend
+      );
+
+
+    typing.remove();
+
+
+    addMessageToUI(
+      "assistant",
+      reply
+    );
+
+
+    currentConversation.push({
+      role:"assistant",
+      content:reply
+    });
+
+
+    saveConversation();
+
+
+  }catch(error){
+
+    typing.remove();
+
+
+    const message =
+      getReadableError(error);
+
+
+    addMessageToUI(
+      "assistant",
+      message
+    );
+
+
+  }finally{
+
+    isSending = false;
+
+    send.disabled = false;
+
+    chatStatus.textContent =
+      "Connected to KNOX AI";
+
+    updateUsage();
+
+  }
+
+}
+
+
+/* =========================================================
+   BACKEND REQUEST
+========================================================= */
+
+async function requestAI(
+  text,
+  image
+){
+
+  if(!endpoint){
+
+    throw new Error(
+      "No backend endpoint has been configured."
+    );
+
+  }
+
+
+  const payload = {
+
+    message:text,
+
+    prompt:text,
+
+    messages:[
+      ...currentConversation
+    ],
+
+    name:userName
+
+  };
+
+
+  if(image){
+
+    payload.image = image;
+
+  }
+
+
+  const response =
+    await fetch(
+      endpoint,
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+            "application/json"
+        },
+
+        body:JSON.stringify(payload)
+      }
+    );
+
+
+  if(!response.ok){
+
+    let detail = "";
+
+    try{
+
+      detail =
+        await response.text();
+
+    }catch{
+
+      detail = "";
+
+    }
+
+
+    throw new Error(
+      `Backend returned HTTP ${response.status}. ${detail}`
+    );
+
+  }
+
+
+  const data =
+    await response.json();
+
+
+  return extractAIResponse(data);
+
+}
+
+
+/* =========================================================
+   RESPONSE PARSER
+========================================================= */
+
+function extractAIResponse(data){
+
+  if(typeof data === "string"){
+
+    return data;
+
+  }
+
+
+  const possible =
+    [
+
+      data?.reply,
+
+      data?.response,
+
+      data?.message,
+
+      data?.answer,
+
+      data?.content,
+
+      data?.text,
+
+      data?.output,
+
+      data?.data?.reply,
+
+      data?.data?.response,
+
+      data?.data?.message,
+
+      data?.data?.content,
+
+      data?.choices?.[0]?.message?.content,
+
+      data?.choices?.[0]?.text
+
+    ];
+
+
+  const found =
+    possible.find(
+      value =>
+        typeof value === "string" &&
+        value.trim()
+    );
+
+
+  if(found){
+
+    return found.trim();
+
+  }
+
+
+  throw new Error(
+    "The backend responded, but no AI message was found in the response."
+  );
+
+}
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+function handleImage(event){
+
+  const file =
+    event.target.files?.[0];
+
+
+  if(!file){
+    return;
+  }
+
+
+  if(!file.type.startsWith("image/")){
+
+    showToast(
+      "Please select an image"
+    );
+
+    return;
+
+  }
+
+
+  const reader =
+    new FileReader();
+
+
+  reader.onload = () => {
+
+    attachedImage =
+      reader.result;
+
+    preview.src =
+      attachedImage;
+
+    document
+      .getElementById("imageModal")
+      .classList.add("show");
+
+
+    showToast(
+      "Image attached"
+    );
+
+  };
+
+
+  reader.readAsDataURL(file);
+
+}
+
+
+/* =========================================================
+   ASK ABOUT IMAGE
+========================================================= */
+
+askImage.addEventListener(
+  "click",
+  () => {
+
+    document
+      .getElementById("imageModal")
+      .classList.remove("show");
+
+
+    openChat();
+
+
+    if(!attachedImage){
+
+      showToast(
+        "No image selected"
+      );
+
+      return;
+
+    }
+
+
+    input.value =
+      "Please analyze this image and explain what you can see.";
+
+    autoResize();
+
+    input.focus();
+
+  }
+);
+
 
 /* =========================================================
    MODALS
 ========================================================= */
 
-document.querySelectorAll("[data-close]").forEach(button => {
-  button.addEventListener("click", () => {
-    const modal = $(button.dataset.close);
+function setupModals(){
 
-    if (modal) {
-      modal.classList.remove("show");
+  profile.addEventListener(
+    "click",
+    () => {
+
+      document
+        .getElementById("profileModal")
+        .classList.add("show");
+
     }
-  });
-});
-
-document.querySelectorAll(".modal").forEach(modal => {
-  modal.addEventListener("click", event => {
-    if (event.target === modal) {
-      modal.classList.remove("show");
-    }
-  });
-});
-
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") {
-    document
-      .querySelectorAll(".modal.show")
-      .forEach(modal => {
-        modal.classList.remove("show");
-      });
-
-    closeDrawer();
-  }
-});
-
-/* =========================================================
-   DAILY RESET
-========================================================= */
-
-function checkDailyReset() {
-  const today =
-    new Date().toISOString().slice(0, 10);
-
-  const savedDate =
-    localStorage.getItem("knox_counter_date");
-
-  if (savedDate !== today) {
-    messageCount = 0;
-
-    localStorage.setItem(
-      "knox_message_count",
-      "0"
-    );
-
-    localStorage.setItem(
-      "knox_counter_date",
-      today
-    );
-  }
-
-  updateCounter();
-}
-
-/* =========================================================
-   PAGE VISIBILITY
-========================================================= */
-
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) {
-    checkDailyReset();
-    updateProfile();
-    updateChatStatus();
-  }
-});
-
-/* =========================================================
-   BEFORE UNLOAD
-========================================================= */
-
-window.addEventListener("beforeunload", () => {
-  localStorage.setItem(
-    "knox_history",
-    JSON.stringify(conversations)
   );
-});
 
-/* =========================================================
-   FINAL STARTUP
-========================================================= */
 
-function finalStartup() {
-  checkDailyReset();
-  loadSettings();
-  updateProfile();
-  loadTheme();
-  renderHistory();
-  updateCounter();
-  updateChatStatus();
+  editProfile.addEventListener(
+    "click",
+    () => {
+
+      document
+        .getElementById("profileModal")
+        .classList.remove("show");
+
+      showView("settings");
+
+      nameInput.focus();
+
+    }
+  );
+
+
+  document
+    .querySelectorAll("[data-close]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const id =
+            button.dataset.close;
+
+          const modal =
+            document.getElementById(id);
+
+          if(modal){
+            modal.classList.remove("show");
+          }
+
+        }
+      );
+
+    });
+
+
+  document
+    .querySelectorAll(".modal")
+    .forEach(modal => {
+
+      modal.addEventListener(
+        "click",
+        event => {
+
+          if(event.target === modal){
+
+            modal.classList.remove(
+              "show"
+            );
+
+          }
+
+        }
+      );
+
+    });
+
 }
 
-finalStartup();
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function setupSettings(){
+
+  saveButton.addEventListener(
+    "click",
+    saveSettings
+  );
+
+}
+
+
+function saveSettings(){
+
+  const newEndpoint =
+    endpointInput.value.trim();
+
+
+  endpoint =
+    newEndpoint ||
+    DEFAULT_ENDPOINT;
+
+
+  userName =
+    nameInput.value.trim() ||
+    "Knox";
+
+
+  localStorage.setItem(
+    STORAGE.endpoint,
+    endpoint
+  );
+
+
+  localStorage.setItem(
+    STORAGE.name,
+    userName
+  );
+
+
+  loadProfile();
+
+  endpointInput.value =
+    endpoint;
+
+
+  updateConnectionStatus();
+
+  showToast(
+    "Settings saved"
+  );
+
+}
+
+
+/* =========================================================
+   CONNECTION STATUS
+========================================================= */
+
+async function updateConnectionStatus(){
+
+  if(!endpoint){
+
+    chatStatus.textContent =
+      "Backend not configured";
+
+    homeStatus.textContent =
+      "Backend not configured";
+
+    return;
+
+  }
+
+
+  chatStatus.textContent =
+    "KNOX AI backend ready";
+
+
+  homeStatus.textContent =
+    "Powered through the KNOX AI backend.";
+
+}
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+function getHistory(){
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(
+        STORAGE.history
+      ) || "[]"
+    );
+
+  }catch{
+
+    return [];
+
+  }
+
+}
+
+
+function saveConversation(){
+
+  if(
+    currentConversation.length < 2
+  ){
+    return;
+  }
+
+
+  const history =
+    getHistory();
+
+
+  const firstUser =
+    currentConversation.find(
+      item =>
+        item.role === "user"
+    );
+
+
+  if(!firstUser){
+    return;
+  }
+
+
+  const item = {
+
+    id:Date.now(),
+
+    title:
+      firstUser.content
+        .slice(0,70),
+
+    messages:[
+      ...currentConversation
+    ],
+
+    date:
+      new Date().toLocaleString()
+
+  };
+
+
+  history.unshift(item);
+
+
+  const limited =
+    history.slice(0,30);
+
+
+  localStorage.setItem(
+    STORAGE.history,
+    JSON.stringify(limited)
+  );
+
+
+  renderHistory();
+
+}
+
+
+function setupHistory(){
+
+  renderHistory();
+
+}
+
+
+function renderHistory(){
+
+  if(!historyBox){
+    return;
+  }
+
+
+  const history =
+    getHistory();
+
+
+  if(history.length === 0){
+
+    historyBox.innerHTML = `
+      <div class="empty">
+        🦊<br><br>
+        No conversations yet.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  historyBox.innerHTML = "";
+
+
+  history.forEach(item => {
+
+    const row =
+      document.createElement("div");
+
+    row.className =
+      "history-item";
+
+
+    const content =
+      document.createElement("div");
+
+
+    const title =
+      document.createElement("b");
+
+    title.textContent =
+      item.title ||
+      "KNOX AI conversation";
+
+
+    const date =
+      document.createElement("small");
+
+    date.textContent =
+      item.date || "";
+
+
+    content.appendChild(title);
+
+    content.appendChild(date);
+
+
+    const open =
+      document.createElement("button");
+
+    open.textContent =
+      "Open";
+
+
+    open.addEventListener(
+      "click",
+      () => {
+
+        loadConversation(item);
+
+      }
+    );
+
+
+    row.appendChild(content);
+
+    row.appendChild(open);
+
+    historyBox.appendChild(row);
+
+  });
+
+}
+
+
+function loadConversation(item){
+
+  if(!item.messages){
+    return;
+  }
+
+
+  currentConversation =
+    [...item.messages];
+
+
+  messages =
+    [...item.messages];
+
+
+  messagesBox.innerHTML = "";
+
+
+  item.messages.forEach(message => {
+
+    addMessageToUI(
+      message.role,
+      message.content
+    );
+
+  });
+
+
+  showView("chat");
+
+}
+
+
+/* =========================================================
+   NEW CHAT
+========================================================= */
+
+function startNewChat(){
+
+  currentConversation = [];
+
+  messages = [];
+
+  attachedImage = null;
+
+  input.value = "";
+
+  messagesBox.innerHTML = "";
+
+  renderWelcome();
+
+  showView("chat");
+
+  closeDrawerFn();
+
+  input.focus();
+
+}
+
+
+/* =========================================================
+   CLEAR DATA
+========================================================= */
+
+clearButton.addEventListener(
+  "click",
+  () => {
+
+    const confirmed = confirm(
+      "Clear your saved KNOX AI profile, settings and chat history?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    localStorage.removeItem(STORAGE.name);
+    localStorage.removeItem(STORAGE.endpoint);
+    localStorage.removeItem(STORAGE.history);
+    localStorage.removeItem(STORAGE.theme);
+
+    userName = "Knox";
+
+    endpoint = DEFAULT_ENDPOINT;
+
+    document.body.classList.remove("dark");
+
+    loadProfile();
+
+    endpointInput.value = endpoint;
+
+    renderHistory();
+
+    startNewChat();
+
+    showToast("Local data cleared");
+  }
+);
+
+
+/* =========================================================
+   MORE BUTTON
+========================================================= */
+
+more.addEventListener(
+  "click",
+  () => {
+    showToast("KNOX AI menu");
+  }
+);
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+function showToast(message) {
+
+  toast.textContent = message;
+
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(
+    () => {
+      toast.classList.remove("show");
+    },
+    2200
+  );
+}
+
+
+/* =========================================================
+   USAGE
+========================================================= */
+
+function updateUsage() {
+
+  left.textContent = "∞";
+}
+
+
+/* =========================================================
+   ERROR HANDLING
+========================================================= */
+
+function getReadableError(error) {
+
+  const message =
+    error?.message || "";
+
+
+  if (message.includes("Failed to fetch")) {
+
+    return `I couldn't reach the KNOX AI backend.
+
+Please check that your Railway backend is running and that the endpoint in Settings is correct.`;
+  }
+
+
+  if (message.includes("HTTP 404")) {
+
+    return `The KNOX AI backend returned 404.
+
+Check the API endpoint in Settings.`;
+  }
+
+
+  if (message.includes("HTTP 500")) {
+
+    return `The KNOX AI backend returned a server error.
+
+The website is working, but the Railway backend needs to be checked.`;
+  }
+
+
+  return `Sorry — I couldn't complete that request.
+
+${message || "Unknown backend error."}`;
+}
+
+
+/* =========================================================
+   KEYBOARD SHORTCUT
+========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (event.key === "Escape") {
+
+      closeDrawerFn();
+
+      document
+        .querySelectorAll(".modal.show")
+        .forEach(modal => {
+          modal.classList.remove("show");
+        });
+
+    }
+
+  }
+);
